@@ -12,9 +12,11 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
+    "swagger-ui-express": "^4.2.0",
     "webtorrent-hybrid": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "swagger-autogen": "^2.13.2"
   }
 }

@@ -28,3 +28,4 @@ benchmarks/graphs
 
 
 .idea
+/swagger-output.json

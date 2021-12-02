@@ -1,7 +1,11 @@
 const {exec, spawn} = require("child_process");
-var express = require('express');
+const express = require('express');
 // const {handleRes} = require("./utility");
-var router = express.Router();
+const router = express.Router();
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./../swagger-output.json');
+// router.use('/api-docs', swaggerUi.serve);
+// router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 
 var data = null;
