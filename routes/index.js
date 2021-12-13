@@ -2,10 +2,10 @@ const {exec, spawn} = require("child_process");
 const express = require('express');
 // const {handleRes} = require("./utility");
 const router = express.Router();
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./../swagger-output.json');
-// router.use('/api-docs', swaggerUi.serve);
-// router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./../swagger-output.json');
+router.use('/api-docs', swaggerUi.serve);
+router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 
 var data = null;

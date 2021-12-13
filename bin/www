@@ -102,9 +102,7 @@ function onListening() {
     // const outputFile = "./swagger-output.json";
     // const endpointsFiles = ["./app.js"];
     //
-    // swaggerAutogen(outputFile, endpointsFiles, config).then(async () => {
-    //     await import('./index.js'); // Your express api project's root file where the server starts
-    // });
-
-    debug('Listening on ' + bind);
+    // swaggerAutogen(outputFile, endpointsFiles, config)
+    //
+    // debug('Listening on ' + bind);
 }
