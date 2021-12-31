@@ -92,7 +92,7 @@ function onListening() {
     // debug("SETTING UP SWAGGER")
     // const config = {
     //     info: {
-    //         title: 'Torrent client',
+    //         title: 'Downloads client',
     //         description: 'API for torrent client managing',
     //     },
     //     host: 'localhost:' + process.env.API_PORT,

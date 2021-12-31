@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npx nodemon ./bin/www",
+    "start": "npx nodemon --ignore config.json ./bin/www",
     "swagger-autogen": "node swagger.js"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
     "swagger-ui-express": "^4.2.0",
+    "webtorrent": "^1.5.8",
     "webtorrent-hybrid": "^5.0.1"
   },
   "devDependencies": {

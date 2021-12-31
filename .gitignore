@@ -29,3 +29,5 @@ benchmarks/graphs
 
 .idea
 /swagger-output.json
+/Downloads
+config.json
