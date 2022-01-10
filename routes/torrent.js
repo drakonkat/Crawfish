@@ -1,17 +1,19 @@
 const {exec, spawn} = require("child_process");
 const express = require('express');
 const WebTorrent = require('webtorrent-hybrid');
-const ConfigStorage = require("./classes/ConfigStorage");
+
 // const {handleRes} = require("./utility");
 const router = express.Router();
 
 const client = new WebTorrent({
-    destroyStoreOnDestroy: false
+    destroyStoreOnDestroy: false,
+    maxConns: 100,        // Max number of connections per torrent (default=55)
+    utp: true,            // Enable BEP29 uTorrent transport protocol (default=false)
+
 });
 client.on("error", (e)=>{
     console.error("ERROR ON CLIENT: ",e)
 })
-const storage = new ConfigStorage();
 
 router.post('/add', (req, res, next) => {
     /*
