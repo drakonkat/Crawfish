@@ -1,6 +1,6 @@
 const {exec, spawn} = require("child_process");
 const express = require('express');
-const WebTorrent = require('webtorrent');
+const WebTorrent = require('webtorrent-hybrid');
 const ConfigStorage = require("./classes/ConfigStorage");
 // const {handleRes} = require("./utility");
 const router = express.Router();

@@ -15,7 +15,7 @@
     "pug": "2.0.0-beta11",
     "swagger-ui-express": "^4.2.0",
     "webtorrent": "^1.5.8",
-    "webtorrent-hybrid": "^5.0.1"
+    "webtorrent-hybrid": "^4.1.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
