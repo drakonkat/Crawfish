@@ -4,15 +4,15 @@ const WebTorrent = require('webtorrent-hybrid');
 
 // const {handleRes} = require("./utility");
 const router = express.Router();
-
-const client = new WebTorrent({
+const TORRENTS_KEY = "torrent";
+const opts = {
     destroyStoreOnDestroy: false,
     maxConns: 100,        // Max number of connections per torrent (default=55)
     utp: true,            // Enable BEP29 uTorrent transport protocol (default=false)
-
-});
-client.on("error", (e)=>{
-    console.error("ERROR ON CLIENT: ",e)
+}
+const client = new WebTorrent(opts);
+client.on("error", (e) => {
+    console.error("ERROR ON CLIENT: ", e)
 })
 
 router.post('/add', (req, res, next) => {
@@ -33,7 +33,10 @@ router.post('/add', (req, res, next) => {
             }]
         }
     */
-    console.debug('Body:', req.app.locals.storage.getDownload());
+
+    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+    torrents.add(req.body.magnet)
+    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
     client.add(req.body.magnet, {path: req.app.locals.storage.getDownload()});
     res.status(200).json(req.body);
 });
@@ -82,22 +85,34 @@ router.get('/check-status', (req, res, next) => {
         }
     }
     */
-    res.status(200).json(client.torrents.map(x => {
-        return {
-            name: x.name,
-            infoHash: x.infoHash,
-            magnet: x.magnetURI,
-            downloaded: x.downloaded,
-            uploaded: x.uploaded,
-            downloadSpeed: x.downloadSpeed,
-            uploadSpeed: x.uploadSpeed,
-            progress: x.progress,
-            ratio: x.ratio,
-            path: x.path,
-            done: x.done,
-            paused: x.paused,
-        }
-    }))
+    try {
+        res.status(200).json(client.torrents.map(x => {
+            return {
+                name: x.name,
+                infoHash: x.infoHash,
+                magnet: x.magnetURI,
+                downloaded: x.downloaded,
+                uploaded: x.uploaded,
+                downloadSpeed: x.downloadSpeed,
+                uploadSpeed: x.uploadSpeed,
+                progress: x.progress,
+                ratio: x.ratio,
+                path: x.path,
+                done: x.done,
+                paused: x.paused,
+                timeRemaining: x.timeRemaining,
+                received: x.received,
+                files: x.files && x.files.map(y => {
+                    return {
+                        name: y.name,
+                        length: y.length,
+                    }
+                })
+            }
+        }))
+    } catch (e) {
+        console.error(e)
+    }
 });
 
 router.post('/destroy', (req, res, next) => {
@@ -119,6 +134,9 @@ router.post('/destroy', (req, res, next) => {
         }
     */
     console.debug('Body:', req.body);
+    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+    torrents.remove(req.body.magnet)
+    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
     client.get(req.body.magnet).destroy({destroyStore: true});
     res.status(200).json(req.body);
 });
@@ -143,6 +161,9 @@ router.post('/remove', (req, res, next) => {
         }
     */
     console.debug('Body:', req.body);
+    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+    torrents.remove(req.body.magnet)
+    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
     client.get(req.body.magnet).destroy();
     res.status(200).json(req.body);
 });

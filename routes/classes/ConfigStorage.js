@@ -25,6 +25,13 @@ class ConfigStorage {
         this.saveData(this.configuration.path, this.configuration)
     }
 
+    setVariable(key,data) {
+        this.configuration[key] = data;
+        this.saveData(this.configuration.path, this.configuration)
+    }
+    getVariable(key) {
+        return this.configuration[key];
+    }
     getPath() {
         return this.configuration.path;
     }
