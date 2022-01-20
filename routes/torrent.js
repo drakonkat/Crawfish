@@ -1,19 +1,10 @@
 const {exec, spawn} = require("child_process");
 const express = require('express');
-const WebTorrent = require('webtorrent-hybrid');
+const {mapTorrent} = require("./classes/utility");
 
 // const {handleRes} = require("./utility");
 const router = express.Router();
 const TORRENTS_KEY = "torrent";
-const opts = {
-    destroyStoreOnDestroy: false,
-    maxConns: 100,        // Max number of connections per torrent (default=55)
-    utp: true,            // Enable BEP29 uTorrent transport protocol (default=false)
-}
-const client = new WebTorrent(opts);
-client.on("error", (e) => {
-    console.error("ERROR ON CLIENT: ", e)
-})
 
 router.post('/add', (req, res, next) => {
     /*
@@ -33,12 +24,17 @@ router.post('/add', (req, res, next) => {
             }]
         }
     */
-
-    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-    torrents.add(req.body.magnet)
-    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-    client.add(req.body.magnet, {path: req.app.locals.storage.getDownload()});
-    res.status(200).json(req.body);
+    try {
+        let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
+        if (temp) {
+            temp.resume()
+        } else {
+            req.app.locals.storage.liveData.client.add(req.body.magnet, {path: req.app.locals.storage.getDownload()});
+            res.status(200).json(req.body);
+        }
+    } catch (e) {
+        console.error("AJBDKASDA", e)
+    }
 });
 router.post('/pause', (req, res, next) => {
     /*
@@ -58,9 +54,27 @@ router.post('/pause', (req, res, next) => {
             }]
         }
     */
-    console.debug('Body:', req.body);
-    client.get(req.body.magnet).pause();
-    res.status(200).json(req.body);
+    try {
+        console.debug('Body:', req.body);
+        let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
+        if (temp) {
+            let t = mapTorrent(temp);
+            let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+            torrents.forEach((x, index) => {
+                if (x.magnet == t.magnet) {
+                    torrents[index] = t;
+                    torrents[index].paused = true;
+                    torrents[index].downloadSpeed = 0;
+                    torrents[index].uploadSpeed = 0;
+                }
+            })
+            req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
+            temp.destroy()
+        }
+        res.status(200).json(req.body);
+    }catch (e) {
+        console.error(e)
+    }
 });
 
 router.get('/check-status', (req, res, next) => {
@@ -86,30 +100,10 @@ router.get('/check-status', (req, res, next) => {
     }
     */
     try {
-        res.status(200).json(client.torrents.map(x => {
-            return {
-                name: x.name,
-                infoHash: x.infoHash,
-                magnet: x.magnetURI,
-                downloaded: x.downloaded,
-                uploaded: x.uploaded,
-                downloadSpeed: x.downloadSpeed,
-                uploadSpeed: x.uploadSpeed,
-                progress: x.progress,
-                ratio: x.ratio,
-                path: x.path,
-                done: x.done,
-                paused: x.paused,
-                timeRemaining: x.timeRemaining,
-                received: x.received,
-                files: x.files && x.files.map(y => {
-                    return {
-                        name: y.name,
-                        length: y.length,
-                    }
-                })
-            }
-        }))
+        let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
+        let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        torrents.push(...oldTorrent.filter(x=>!torrents.map(y=>y.magnet).includes(x.magnet)))
+        res.status(200).json(torrents)
     } catch (e) {
         console.error(e)
     }
@@ -135,9 +129,9 @@ router.post('/destroy', (req, res, next) => {
     */
     console.debug('Body:', req.body);
     let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-    torrents.remove(req.body.magnet)
+    torrents = torrents.filter(x => x.magnet != req.body.magnet)
     req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-    client.get(req.body.magnet).destroy({destroyStore: true});
+    req.app.locals.storage.liveData.client.get(req.body.magnet).destroy({destroyStore: true});
     res.status(200).json(req.body);
 });
 
@@ -162,50 +156,10 @@ router.post('/remove', (req, res, next) => {
     */
     console.debug('Body:', req.body);
     let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-    torrents.remove(req.body.magnet)
+    torrents = torrents.filter(x => x.magnet != req.body.magnet)
     req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-    client.get(req.body.magnet).destroy();
+    req.app.locals.storage.liveData.client.get(req.body.magnet).destroy();
     res.status(200).json(req.body);
-});
-
-router.post('/list', (req, res, next) => {
-    /*
-        #swagger.tags = ["Downloads"]
-        #swagger.summary = "Check the status of the torrents"
-        #swagger.description = "It returns all the detail about the torrent",
-        #swagger.responses[200] = {
-        description: "A single torrent information",
-        schema: [{
-                $name: x.name,
-                $magnet: x.magnetURI,
-                $downloaded: x.downloaded,
-                $uploaded: x.uploaded,
-                $downloadSpeed: x.downloadSpeed,
-                $uploadSpeed: x.uploadSpeed,
-                $progress: x.progress,
-                $ratio: x.ratio,
-                $path: x.path,
-                $done: x.done
-            }]
-        }
-    }
-    */
-    res.status(200).json(client.torrents.map(x => {
-        return {
-            name: x.name,
-            infoHash: x.infoHash,
-            magnet: x.magnetURI,
-            downloaded: x.downloaded,
-            uploaded: x.uploaded,
-            downloadSpeed: x.downloadSpeed,
-            uploadSpeed: x.uploadSpeed,
-            progress: x.progress,
-            ratio: x.ratio,
-            path: x.path,
-            done: x.done,
-            paused: x.paused,
-        }
-    }))
 });
 
 module.exports = router;

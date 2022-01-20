@@ -1,14 +1,36 @@
 const fs = require('fs');
+const WebTorrent = require('webtorrent-hybrid');
+const {mapTorrent} = require("./utility");
+
+const TORRENTS_KEY = "torrent";
 
 
 class ConfigStorage {
     configuration = {
         path: "./config.json",
-        downloadPath: "./Downloads/"
+        downloadPath: "./Downloads/",
+        opts: {
+            destroyStoreOnDestroy: false,
+            maxConns: 100,        // Max number of connections per torrent (default=55)
+            utp: true,            // Enable BEP29 uTorrent transport protocol (default=false)
+        }
+    }
+    liveData = {
+        client: new WebTorrent(this.configuration.opts)
     }
 
     constructor() {
         console.log("MI COSTRUISCO")
+        this.liveData.client.on("error", (e) => {
+            console.error("ERROR ON CLIENT: ", e)
+        })
+        this.liveData.client.on('torrent', (torrent) => {
+            let t = mapTorrent(torrent);
+            let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
+            torrents.push(t)
+            this.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
+        })
+
         let result = this.readData(this.configuration.path)
         if (result == null) {
             result = this.configuration;
@@ -25,13 +47,15 @@ class ConfigStorage {
         this.saveData(this.configuration.path, this.configuration)
     }
 
-    setVariable(key,data) {
+    setVariable(key, data) {
         this.configuration[key] = data;
         this.saveData(this.configuration.path, this.configuration)
     }
+
     getVariable(key) {
         return this.configuration[key];
     }
+
     getPath() {
         return this.configuration.path;
     }
