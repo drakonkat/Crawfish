@@ -1,6 +1,4 @@
 variables:
-  DOCKER_USERNAME: "DockerRepositoryT4C"
-  DOCKER_PASSWORD: "AlUnzXAv3NftvkgBm1Nw6IJYM+ufMath"
   IMAGE_VERSION: "0.5"
 
 stages:
