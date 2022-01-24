@@ -7,7 +7,7 @@ stages:
   - prepare-docker
 
 express:
-  image: docker:20.10.6
+  image: docker:latest
   stage: prepare-docker
   script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
