@@ -1,4 +1,6 @@
 variables:
+  DOCKER_USERNAME: "mauromazzocchetti"
+  DOCKER_PASSWORD: "F-C6dD!i3cKaiM-"
   IMAGE_VERSION: "0.5"
 
 stages:
