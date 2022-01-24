@@ -1,10 +1,12 @@
 {
   "name": "webtorrent-express-api",
-  "version": "0.0.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "start": "npx nodemon --ignore config.json ./bin/www",
-    "swagger-autogen": "node swagger.js"
+    "swagger-autogen": "node swagger.js",
+    "prod_win": "set NODE_ENV=production && node ./bin/www",
+    "prod": "NODE_ENV=production node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

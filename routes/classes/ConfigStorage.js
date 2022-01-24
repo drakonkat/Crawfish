@@ -20,22 +20,47 @@ class ConfigStorage {
     }
 
     constructor() {
-        console.log("MI COSTRUISCO")
+        console.log("Starting the service...")
+
+
+        let result = this.readData(this.configuration.path)
+        if (result == null) {
+            result = this.configuration;
+            this.saveData(this.configuration.path, result)
+        } else {
+            this.configuration = result;
+        }
+
+
+        let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
+        console.log("Reload old files saved in config: ", torrents)
+        torrents.forEach((x, index) => {
+            if (!x.paused) {
+                this.liveData.client.add(x.magnet, {path: this.getDownload()});
+            }
+        });
+
         this.liveData.client.on("error", (e) => {
             console.error("ERROR ON CLIENT: ", e)
         })
         this.liveData.client.on('torrent', (torrent) => {
             let t = mapTorrent(torrent);
             let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
-            torrents.push(t)
+            let founded = false;
+            torrents.forEach((x, index) => {
+                if (x.magnet == t.magnet) {
+                    founded = true;
+                    torrents[index] = t;
+                    torrents[index].paused = true;
+                    torrents[index].downloadSpeed = 0;
+                    torrents[index].uploadSpeed = 0;
+                }
+            })
+            if (!founded) {
+                torrents.push(t)
+            }
             this.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
         })
-
-        let result = this.readData(this.configuration.path)
-        if (result == null) {
-            result = this.configuration;
-            this.saveData(this.configuration.path, result)
-        }
     }
 
     getConf() {

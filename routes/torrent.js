@@ -102,6 +102,7 @@ router.get('/check-status', (req, res, next) => {
     try {
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
         let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        console.log("CHECK TORRENT: ",torrents && torrents[0] && torrents[0].progress,torrents.length,oldTorrent.filter(x=>!torrents.map(y=>y.magnet).includes(x.magnet)).length)
         torrents.push(...oldTorrent.filter(x=>!torrents.map(y=>y.magnet).includes(x.magnet)))
         res.status(200).json(torrents)
     } catch (e) {

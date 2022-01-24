@@ -1,0 +1,16 @@
+variables:
+  DOCKER_USERNAME: "DockerRepositoryT4C"
+  DOCKER_PASSWORD: "AlUnzXAv3NftvkgBm1Nw6IJYM+ufMath"
+  IMAGE_VERSION: "0.5"
+
+stages:
+  - prepare-docker
+
+express:
+  image: docker:20.10.6
+  stage: prepare-docker
+  script:
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION" ./
+    - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
+    - docker logout
