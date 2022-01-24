@@ -10,7 +10,7 @@ express:
   image: docker:latest
   stage: prepare-docker
   script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
     - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION" ./
     - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
     - docker logout
