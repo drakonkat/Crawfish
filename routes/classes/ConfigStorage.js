@@ -11,8 +11,10 @@ class ConfigStorage {
         downloadPath: "./Downloads/",
         opts: {
             destroyStoreOnDestroy: false,
-            maxConns: 100,        // Max number of connections per torrent (default=55)
-            utp: true,            // Enable BEP29 uTorrent transport protocol (default=false)
+            maxConns: 20,        // Max number of connections per torrent (default=55)
+            utp: true,
+            downloadLimit: 12500,   // Max download speed (bytes/sec) over all torrents (default=-1)
+            uploadLimit: 12500,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
         }
     }
     liveData = {
