@@ -5,7 +5,6 @@ const ConfigStorage = require("./classes/ConfigStorage");
 const router = express.Router();
 
 
-
 router.post('/edit', async (req, res, next) => {
     /*
         #swagger.tags = ['Config']
@@ -22,11 +21,25 @@ router.post('/edit', async (req, res, next) => {
         schema: true
         }
     */
-    console.log('Body:', req.body);
-    console.log("CHECK DATA: ", req.app.locals.storage.getDownload())
-    req.app.locals.storage.setDownload(req.body.path);
-    console.log("CHECK DATA: ", req.app.locals.storage.getDownload())
+    req.app.locals.storage.setDownload(req.body.downloadPath);
+    req.app.locals.storage.setDownloadLimit(req.body.downloadSpeed);
+    req.app.locals.storage.setUploadLimit(req.body.uploadSpeed);
     res.status(200).json(true)
+});
+router.get('/', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Config']
+        #swagger.summary = "Return the configuration of the torrent"
+         #swagger.responses[200] = {
+        description: "The configuration",
+        schema: true
+        }
+    */
+    res.status(200).json({
+        downloadSpeed: req.app.locals.storage.configuration.opts.downloadLimit,
+        downloadPath: req.app.locals.storage.configuration.downloadPath,
+        uploadSpeed: req.app.locals.storage.configuration.opts.uploadLimit
+    })
 });
 
 module.exports = router;

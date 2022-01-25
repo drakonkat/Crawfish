@@ -96,6 +96,26 @@ class ConfigStorage {
         return this.configuration.downloadPath;
     }
 
+
+    setDownloadLimit(speed) {
+        this.configuration.opts.downloadLimit = speed;
+        this.liveData.client.throttleDownload(speed);
+        this.saveData(this.configuration.path, this.configuration)
+    }
+
+    getDownloadLimit() {
+        return this.configuration.opts.downloadLimit;
+    }
+    setUploadLimit(speed) {
+        this.configuration.opts.uploadLimit = speed;
+        this.liveData.client.throttleUpload(speed);
+        this.saveData(this.configuration.path, this.configuration)
+    }
+
+    getUploadLimit() {
+        return this.configuration.opts.uploadLimit;
+    }
+
     readData(name = this.configuration.path) {
         try {
             return JSON.parse(fs.readFileSync(name));
