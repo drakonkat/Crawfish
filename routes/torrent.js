@@ -25,11 +25,15 @@ router.post('/add', (req, res, next) => {
         }
     */
     try {
-        let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
+        let magnet = req.body.magnet;
+        if(magnet && magnet.includes("magnet:?")){
+            magnet= magnet+"&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.webtorrent.io"
+        }
+        let temp = req.app.locals.storage.liveData.client.get(magnet);
         if (temp) {
             temp.resume()
         } else {
-            req.app.locals.storage.liveData.client.add(req.body.magnet, {path: req.app.locals.storage.getDownload()});
+            req.app.locals.storage.liveData.client.add(magnet, {path: req.app.locals.storage.getDownload()});
             res.status(200).json(req.body);
         }
     } catch (e) {

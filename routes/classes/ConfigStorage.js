@@ -13,6 +13,7 @@ class ConfigStorage {
             destroyStoreOnDestroy: false,
             maxConns: 20,        // Max number of connections per torrent (default=55)
             utp: true,
+            webSeeds: true,
             downloadLimit: 12500,   // Max download speed (bytes/sec) over all torrents (default=-1)
             uploadLimit: 12500,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
         }
@@ -22,7 +23,7 @@ class ConfigStorage {
     }
 
     constructor() {
-        console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT)
+        console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT)
         let result = this.readData(this.configuration.path)
         if (result == null) {
             result = this.configuration;
@@ -33,13 +34,12 @@ class ConfigStorage {
 
 
         let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
-        console.log("Reload old files saved in config: ", torrents)
+        // console.log("Reload old files saved in config: ", torrents)
         torrents.forEach((x, index) => {
             if (!x.paused) {
                 this.liveData.client.add(x.magnet, {path: this.getDownload()});
             }
         });
-
         this.liveData.client.on("error", (e) => {
             console.error("ERROR ON CLIENT: ", e)
         })
