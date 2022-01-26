@@ -22,9 +22,7 @@ class ConfigStorage {
     }
 
     constructor() {
-        console.log("Starting the service...")
-
-
+        console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT)
         let result = this.readData(this.configuration.path)
         if (result == null) {
             result = this.configuration;
@@ -106,6 +104,7 @@ class ConfigStorage {
     getDownloadLimit() {
         return this.configuration.opts.downloadLimit;
     }
+
     setUploadLimit(speed) {
         this.configuration.opts.uploadLimit = speed;
         this.liveData.client.throttleUpload(speed);
