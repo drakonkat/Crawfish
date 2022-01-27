@@ -27,7 +27,7 @@ router.post('/add', (req, res, next) => {
     try {
         let magnet = req.body.magnet;
         if(magnet && magnet.includes("magnet:?")){
-            magnet= magnet+"&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz"
+            magnet= magnet+"&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz"
         }
         let temp = req.app.locals.storage.liveData.client.get(magnet);
         if (temp) {
