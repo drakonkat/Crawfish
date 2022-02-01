@@ -6,7 +6,8 @@
     "start": "npx nodemon --ignore config.json ./bin/www",
     "swagger-autogen": "node swagger.js",
     "prod_win": "set NODE_ENV=production && node ./bin/www",
-    "prod": "NODE_ENV=production node ./bin/www"
+    "prod": "NODE_ENV=production node ./bin/www",
+    "bundle": "pkg ./bin/www --out-path \"./build/\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
