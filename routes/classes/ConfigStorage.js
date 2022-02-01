@@ -16,6 +16,7 @@ class ConfigStorage {
             webSeeds: true,
             downloadLimit: 12500,   // Max download speed (bytes/sec) over all torrents (default=-1)
             uploadLimit: 12500,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
+            torrentPort: 51413
         }
     }
     liveData = {
