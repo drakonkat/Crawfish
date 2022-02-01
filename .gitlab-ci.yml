@@ -19,7 +19,7 @@ express:
 
 
 release:
-  image: nodejs:latest
+  image: node:latest
   stage: prepare-docker
   script:
     - npm install -g pkg
