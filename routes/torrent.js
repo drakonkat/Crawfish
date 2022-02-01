@@ -26,8 +26,8 @@ router.post('/add', (req, res, next) => {
     */
     try {
         let magnet = req.body.magnet;
-        if(magnet && magnet.includes("magnet:?")){
-            magnet= magnet+"&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz"
+        if (magnet && magnet.includes("magnet:?")) {
+            magnet = magnet + "&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent"
         }
         let temp = req.app.locals.storage.liveData.client.get(magnet);
         if (temp) {
@@ -76,7 +76,7 @@ router.post('/pause', (req, res, next) => {
             temp.destroy()
         }
         res.status(200).json(req.body);
-    }catch (e) {
+    } catch (e) {
         console.error(e)
     }
 });
@@ -106,8 +106,8 @@ router.get('/check-status', (req, res, next) => {
     try {
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
         let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-        console.log("CHECK TORRENT: ",torrents && torrents[0] && torrents[0].progress,torrents.length,oldTorrent.filter(x=>!torrents.map(y=>y.magnet).includes(x.magnet)).length)
-        torrents.push(...oldTorrent.filter(x=>!torrents.map(y=>y.magnet).includes(x.magnet)))
+        console.log("CHECK TORRENT: ", torrents && torrents[0] && torrents[0].progress, torrents.length, oldTorrent.filter(x => !torrents.map(y => y.magnet).includes(x.magnet)).length)
+        torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.magnet).includes(x.magnet)))
         res.status(200).json(torrents)
     } catch (e) {
         console.error(e)
