@@ -30,6 +30,7 @@ benchmarks/graphs
 .idea
 .git
 /Downloads
+/build
 config.json
 
 node_modules

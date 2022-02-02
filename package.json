@@ -6,7 +6,7 @@
     "start": "npx nodemon --ignore config.json ./bin/www",
     "swagger-autogen": "node swagger.js",
     "prod_win": "set NODE_ENV=production && node ./bin/www",
-    "prod": "NODE_ENV=production node ./bin/www",
+    "prod": "DEBUG=* NODE_ENV=production node ./bin/www",
     "bundle": "pkg ./bin/www --out-path \"./build/\""
   },
   "dependencies": {
@@ -15,13 +15,17 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "jsdom": "^19.0.0",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
     "swagger-ui-express": "^4.2.0",
+    "webrtc-adapter": "^8.1.1",
     "webtorrent": "^1.5.8",
-    "webtorrent-hybrid": "^4.1.3"
+    "webtorrent-hybrid": "^4.1.3",
+    "wrtc": "^0.4.7"
   },
   "devDependencies": {
+    "node-cmake": "^2.5.1",
     "nodemon": "^2.0.15",
     "swagger-autogen": "^2.13.2"
   }
