@@ -15,7 +15,7 @@ web:
     - npm run build-local
     - cp -R build ../public/
     - cd ..
-    - ls
+    - rm -rf webtorrent-web-gui-standalone/
     - npm install -g node-pre-gyp
     - npm install -g pkg
     - npm i
