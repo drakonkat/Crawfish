@@ -5,23 +5,23 @@ stages:
   - prepare-docker
   - build
 
-  build:
-    image: node:16.8.0
-    stage: build
-    script:
-      - apt-get update -qq && apt-get install -y -qq lftp
-      - git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
-      - cd webtorrent-web-gui-standalone/
-      - npm i
-      - npm run build-local
-      - cp -R build ../public/
-      - cd ..
-      - ls public/
-      - npm i
-      - npm run build
-    artifacts:
-      paths:
-        - build/
+build:
+  image: node:16.8.0
+  stage: build
+  script:
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
+    - cd webtorrent-web-gui-standalone/
+    - npm i
+    - npm run build-local
+    - cp -R build ../public/
+    - cd ..
+    - ls public/
+    - npm i
+    - npm run build
+  artifacts:
+    paths:
+      - build/
 
 express:
   image: docker:latest
