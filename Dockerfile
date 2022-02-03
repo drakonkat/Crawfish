@@ -4,10 +4,7 @@ FROM node:14.9.0
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
-RUN cd webtorrent-web-gui-standalone/
-RUN npm i
-RUN npm run build-local
-RUN cp -R build ../public/
+RUN cd webtorrent-web-gui-standalone/ && npm i && npm run build-local && RUN cp -R build ../public/
 RUN cd ..
 RUN rm -rf webtorrent-web-gui-standalone/
 RUN npm install -g node-pre-gyp
