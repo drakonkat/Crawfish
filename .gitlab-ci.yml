@@ -17,6 +17,7 @@ web:
     - cd ..
     - ls public/
     - npm install -g node-pre-gyp
+    - npm install -g pkg
     - npm i
     - npm run bundle
   artifacts:
