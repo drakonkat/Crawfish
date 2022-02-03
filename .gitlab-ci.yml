@@ -18,7 +18,7 @@ web:
     - ls public/
     - npm install -g node-pre-gyp
     - npm i
-    - npm run build
+    - npm run bundle
   artifacts:
     paths:
       - build/
