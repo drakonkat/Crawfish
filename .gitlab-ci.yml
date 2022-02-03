@@ -3,11 +3,10 @@ variables:
 
 stages:
   - prepare-docker
-  - build
 
-build:
+web:
   image: node:16.8.0
-  stage: build
+  stage: prepare-docker
   script:
     - apt-get update -qq && apt-get install -y -qq lftp
     - git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
@@ -17,6 +16,7 @@ build:
     - cp -R build ../public/
     - cd ..
     - ls public/
+    - npm install -g node-pre-gyp
     - npm i
     - npm run build
   artifacts:
