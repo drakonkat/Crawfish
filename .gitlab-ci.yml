@@ -8,7 +8,6 @@ web:
   image: node:16.8.0
   stage: prepare-docker
   script:
-    - apt-get update -qq && apt-get install -y -qq lftp
     - git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
     - cd webtorrent-web-gui-standalone/
     - npm i
