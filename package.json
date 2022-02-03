@@ -6,7 +6,7 @@
     "start": "npx nodemon --ignore config.json ./bin/www",
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
-    "bundle": "pkg ./bin/www-prod -c \"./package.json\"--out-path \"./build/\""
+    "bundle": "pkg ./bin/www-prod -c \"./package.json\" --out-path \"./build/\""
   },
   "pkg": {
     "scripts": "public/**/*.js",
