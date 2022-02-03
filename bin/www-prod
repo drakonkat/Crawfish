@@ -9,7 +9,7 @@ var debug = require('debug')('webtorrent-express-api:server');
 var http = require('http');
 var open = require('open');
 
-process.env.NODE_ENV = "development"
+process.env.NODE_ENV = "production"
 /**
  * Get port from environment and store in Express.
  */

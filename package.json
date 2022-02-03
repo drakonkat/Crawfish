@@ -5,9 +5,13 @@
   "scripts": {
     "start": "npx nodemon --ignore config.json ./bin/www",
     "swagger-autogen": "node swagger.js",
-    "prod_win": "set NODE_ENV=production && node ./bin/www",
-    "prod": "DEBUG=* NODE_ENV=production node ./bin/www",
-    "bundle": "pkg ./bin/www --out-path \"./build/\""
+    "prod": "node ./bin/www-prod",
+    "bundle": "pkg ./bin/www-prod -c \"./package.json\"--out-path \"./build/\""
+  },
+  "pkg": {
+    "scripts": "public/**/*.js",
+    "assets": "public/**/*",
+    "outputPath": "dist"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,7 +20,8 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11",
+    "open": "^8.4.0",
+    "pug": "^3.0.2",
     "swagger-ui-express": "^4.2.0",
     "webtorrent": "^1.5.8",
     "webtorrent-hybrid": "^4.1.3"

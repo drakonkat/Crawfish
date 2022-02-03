@@ -13,18 +13,19 @@ const app = express();
 
 // view engine setup
 var storage;
-if(!storage){
+if (!storage) {
     storage = new ConfigStorage();
 }
 app.locals.storage = storage;
-app.set('views', path.join(__dirname, 'views'));
+app.engine('pug', require('pug').__express)
+// app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/', indexRouter);
 app.use('/config', configRouter);
@@ -43,7 +44,7 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.json('error');
 });
 
 module.exports = app;
