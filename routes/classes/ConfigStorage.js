@@ -1,22 +1,7 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
 const {mapTorrent} = require("./utility");
-const adapter = require("webrtc-adapter");
-const jsdom = require("jsdom");
-const wrtc = require("wrtc");
-// const WebRTC = require('webrtc-native');
-
-// WebRTC.RTCPeerConnection
-// WebRTC.RTCIceCandidate
-// WebRTC.RTCSessionDescription
-// WebRTC.RTCDataChannel
-// WebRTC.MediaStream
-// WebRTC.MediaStreamTrack
-// WebRTC.getUserMedia
-// WebRTC.getSources
-
 const TORRENTS_KEY = "torrent";
-const {JSDOM} = jsdom
 
 class ConfigStorage {
     configuration = {
@@ -29,25 +14,7 @@ class ConfigStorage {
             webSeeds: true,
             downloadLimit: 12500,   // Max download speed (bytes/sec) over all torrents (default=-1)
             uploadLimit: 12500,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
-            torrentPort: 51413,
-            tracker: {
-                wrtc: wrtc,
-                rtcConfig: {
-                    iceServers: [
-                        {
-                            urls: [
-                                'stun:stun.l.google.com:19302',
-                                'stun:global.stun.twilio.com:3478'
-                            ]
-                        },
-                        {
-                            username: "simple",
-                            credential: "Password1!",
-                            urls: "turn:185.149.22.163:3478"
-                        }
-                    ]
-                }
-            }
+            torrentPort: 51413
         }
     }
     liveData = {

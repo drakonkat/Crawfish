@@ -1,5 +1,5 @@
 variables:
-  IMAGE_VERSION: "0.9"
+  IMAGE_VERSION: "1.0"
 
 stages:
   - prepare-docker
