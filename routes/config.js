@@ -36,6 +36,9 @@ router.get('/', async (req, res, next) => {
         }
     */
     res.status(200).json({
+        actualDownload: req.app.locals.storage.liveData.client.downloadSpeed,
+        actualUpload: req.app.locals.storage.liveData.client.uploadSpeed,
+        actualRatio: req.app.locals.storage.liveData.client.ratio,
         downloadSpeed: req.app.locals.storage.configuration.opts.downloadLimit,
         downloadPath: req.app.locals.storage.configuration.downloadPath,
         uploadSpeed: req.app.locals.storage.configuration.opts.uploadLimit

@@ -8,6 +8,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const configRouter = require('./routes/config');
 const torrentRouter = require('./routes/torrent');
+const categoryRouter = require('./routes/category');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', indexRouter);
 app.use('/config', configRouter);
 app.use('/torrent', torrentRouter);
+app.use('/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

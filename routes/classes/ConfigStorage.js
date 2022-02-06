@@ -9,11 +9,11 @@ class ConfigStorage {
         downloadPath: "./Downloads/",
         opts: {
             destroyStoreOnDestroy: false,
-            maxConns: 20,        // Max number of connections per torrent (default=55)
+            maxConns: 55,        // Max number of connections per torrent (default=55)
             utp: true,
             webSeeds: true,
-            downloadLimit: 12500,   // Max download speed (bytes/sec) over all torrents (default=-1)
-            uploadLimit: 12500,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
+            downloadLimit: 125000,   // Max download speed (bytes/sec) over all torrents (default=-1)
+            uploadLimit: 125000,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
             torrentPort: 51413
         }
     }
@@ -38,7 +38,7 @@ class ConfigStorage {
         // console.log("Reload old files saved in config: ", torrents)
         torrents.forEach((x, index) => {
             if (!x.paused) {
-                this.liveData.client.add(x.magnet, {path: this.getDownload()});
+                this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
             }
         });
         this.liveData.client.on("error", (e) => {
