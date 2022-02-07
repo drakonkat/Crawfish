@@ -18,6 +18,7 @@ const mapTorrent = (x) => {
             return {
                 name: y.name,
                 length: y.length,
+                path: y.path,
             }
         })
     }

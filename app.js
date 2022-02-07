@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const configRouter = require('./routes/config');
 const torrentRouter = require('./routes/torrent');
 const categoryRouter = require('./routes/category');
+const streamRouter = require('./routes/stream');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', indexRouter);
 app.use('/config', configRouter);
 app.use('/torrent', torrentRouter);
+app.use('/stream', streamRouter);
 app.use('/category', categoryRouter);
 
 // catch 404 and forward to error handler

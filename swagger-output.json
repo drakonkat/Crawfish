@@ -7,16 +7,12 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "tags": [],
   "schemes": [
     "http"
   ],
-  "consumes": [],
-  "produces": [],
   "paths": {
     "/api-docs": {
       "get": {
-        "tags": [],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -112,25 +108,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A single torrent information",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "magnet": {
-                    "type": "string",
-                    "example": "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent"
-                  }
-                },
-                "required": [
-                  "magnet"
-                ]
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -194,6 +172,37 @@
         "summary": "Check the status of the torrents",
         "description": "It returns all the detail about the torrent",
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Downloads"
+        ],
+        "summary": "Check the status of a single torrent",
+        "description": "It returns all the detail about the torrent",
+        "parameters": [
+          {
+            "name": "torrent",
+            "in": "body",
+            "description": "Id of the torrent",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "magnet": {
+                  "type": "string",
+                  "example": "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent"
+                }
+              },
+              "required": [
+                "magnet"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -302,7 +311,275 @@
           }
         }
       }
+    },
+    "/stream/upload": {
+      "post": {
+        "tags": [
+          "Stream"
+        ],
+        "summary": "Upload to a remote a single file",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "magnet": {
+                  "example": "any"
+                },
+                "fileName": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "xxx.mp4"
+                      },
+                      "size": {
+                        "type": "number",
+                        "example": 11111
+                      },
+                      "url": {
+                        "type": "string",
+                        "example": "https://domain.com/mcurg8n382uy"
+                      },
+                      "deleteUrl": {
+                        "type": "string",
+                        "example": "https://domain.com/mcurg8n382uy?killcode=agdt0meepz"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/stream/check-existing": {
+      "post": {
+        "tags": [
+          "Stream"
+        ],
+        "summary": "Upload to a remote a single file",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "magnet": {
+                  "example": "any"
+                },
+                "fileName": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of the operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "xxx.mp4"
+                      },
+                      "size": {
+                        "type": "number",
+                        "example": 11111
+                      },
+                      "url": {
+                        "type": "string",
+                        "example": "https://domain.com/mcurg8n382uy"
+                      },
+                      "deleteUrl": {
+                        "type": "string",
+                        "example": "https://domain.com/mcurg8n382uy?killcode=agdt0meepz"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          }
+        }
+      }
+    },
+    "/stream/config": {
+      "get": {
+        "tags": [
+          "Stream"
+        ],
+        "summary": "Retrieve the configuration about streaming",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Configuration data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "uptobox": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "xxxxxxx"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "uptobox"
+              ],
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stream"
+        ],
+        "summary": "Update the configuration about streaming platform",
+        "description": "",
+        "parameters": [
+          {
+            "name": "conf",
+            "in": "body",
+            "description": "Data about configuration (Only uptobox available now",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "uploadEnabled": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "uptobox": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "xxxxxxx"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "uploadEnabled",
+                "uptobox"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "uptobox": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "xxxxxxx"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "uptobox"
+              ],
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get all the category that identify the default path for that category",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Create a category",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "If the operation gone fine",
+            "schema": {
+              "type": "boolean",
+              "example": true,
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
     }
-  },
-  "definitions": {}
+  }
 }
