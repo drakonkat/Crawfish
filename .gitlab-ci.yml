@@ -22,6 +22,7 @@ web:
   artifacts:
     paths:
       - build/
+    expire_in: 1 week
 
 express:
   image: docker:latest
