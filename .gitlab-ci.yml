@@ -4,42 +4,6 @@ variables:
 stages:
   - prepare-docker
 
-
-build:
-  image: electronuserland/builder:wine
-  stage: prepare-docker
-  script:
-    - yarn
-    - electron-builder -w
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - ./dist/
-  only:
-    - feature-nwjs
-
-web:
-  image: node:16.8.0
-  stage: prepare-docker
-  script:
-    - git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
-    - cd webtorrent-web-gui-standalone/
-    - npm i
-    - npm run build-local
-    - cp -R build ../public/
-    - cd ..
-    - rm -rf webtorrent-web-gui-standalone/
-    - npm install -g node-pre-gyp
-    - npm install -g pkg
-    - npm i
-    - npm run bundle
-  artifacts:
-    paths:
-      - build/
-    expire_in: 1 week
-  only:
-    - master
-
 express:
   image: docker:latest
   stage: prepare-docker
