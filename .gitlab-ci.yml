@@ -37,6 +37,8 @@ web:
     paths:
       - build/
     expire_in: 1 week
+  only:
+    - master
 
 express:
   image: docker:latest
@@ -50,3 +52,5 @@ express:
     - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
     - docker push mauromazzocchetti/webtorrent-express-api:latest
     - docker logout
+  only:
+    - master
