@@ -4,6 +4,20 @@ variables:
 stages:
   - prepare-docker
 
+
+build:
+  image: electronuserland/builder:wine
+  stage: prepare-docker
+  script:
+    - npm i
+    - electron-builder -w
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - ./dist/
+  only:
+    - feature-nwjs
+
 web:
   image: node:16.8.0
   stage: prepare-docker
