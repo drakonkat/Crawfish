@@ -9,7 +9,7 @@ build:
   image: electronuserland/builder:wine
   stage: prepare-docker
   script:
-    - npm i
+    - yarn
     - electron-builder -w
   artifacts:
     expire_in: 7 days
