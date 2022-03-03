@@ -34,7 +34,8 @@ router.get('/list', async (req, res, next) => {
                         done: f.progress >= 1,
                         streamable: supportedFormats.includes(getExtension(f.name)),
                         name: f.name,
-                        id: simpleHash(t.infoHash, f.name)
+                        id: simpleHash(t.infoHash, f.name),
+                        torrentMagnet: t.magnet
                     })
                 })
             }
@@ -90,7 +91,7 @@ router.get('/stream', async (req, res, next) => {
             if (!opened && t && t.files) {
                 t.files.forEach((f) => {
                     if (!opened && req.query.fileid === simpleHash(t.infoHash, f.name)) {
-                        res.sendFile(f.path, {root: './'});
+                        res.sendFile(f.path);
                         opened = true;
                     }
                 })

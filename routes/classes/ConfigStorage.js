@@ -12,8 +12,8 @@ class ConfigStorage {
             maxConns: 55,        // Max number of connections per torrent (default=55)
             utp: true,
             webSeeds: true,
-            downloadLimit: 125000,   // Max download speed (bytes/sec) over all torrents (default=-1)
-            uploadLimit: 125000,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
+            downloadLimit: 1250000,   // Max download speed (bytes/sec) over all torrents (default=-1)
+            uploadLimit: 1250000,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
             torrentPort: 51415
         }
     }

@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "private": true,
   "scripts": {
     "start": "npx nodemon --ignore config.json ./bin/www",
@@ -10,7 +10,8 @@
   },
   "build": {
     "appId": "com.tnd.torquix",
-    "icon": "public/build/logo512.png"
+    "icon": "public/build/logo512.png",
+    "copyright": "Copyright 20120-2022 TND"
   },
   "main": "public/electron.js",
   "dependencies": {
