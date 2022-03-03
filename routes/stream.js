@@ -1,6 +1,7 @@
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require("fs");
+const open = require('open')
 const {exec, spawn} = require("child_process");
 const express = require('express');
 const ConfigStorage = require("./classes/ConfigStorage");
@@ -145,14 +146,14 @@ router.post('/check-existing', async (req, res, next) => {
             } else {
                 let responseSearch = await axios({
                     method: "GET",
-                    url: "https://uptobox.com/api/user/files?token=" + token + "&path=//&limit=1&offset=0&searchField=file_name&search="+file.name,
+                    url: "https://uptobox.com/api/user/files?token=" + token + "&path=//&limit=1&offset=0&searchField=file_name&search=" + file.name,
                 })
 
                 res.status(200).json(responseSearch.data.data.files.map(x => {
                     return {
                         name: x.file_name,
                         size: x.file_size,
-                        url: "https://domain.com/"+x.file_code
+                        url: "https://domain.com/" + x.file_code
                     }
 
                 }));

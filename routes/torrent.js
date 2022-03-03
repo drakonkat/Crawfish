@@ -1,10 +1,8 @@
-const {exec, spawn} = require("child_process");
 const express = require('express');
-const {mapTorrent} = require("./classes/utility");
+const {mapTorrent, TORRENTS_KEY} = require("./classes/utility");
 
-// const {handleRes} = require("./utility");
 const router = express.Router();
-const TORRENTS_KEY = "torrent";
+
 
 router.post('/add', (req, res, next) => {
     /*
