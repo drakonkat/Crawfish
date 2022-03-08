@@ -12,6 +12,7 @@ const categoryRouter = require('./routes/category');
 const streamRouter = require('./routes/stream');
 const fileRouter = require('./routes/files');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
+const SearxFetcher = require("./routes/classes/SearxFetcher");
 const app = express();
 
 // view engine setup
@@ -20,6 +21,11 @@ if (!storage) {
     storage = new ConfigStorage();
 }
 app.locals.storage = storage;
+var searx;
+if (!searx) {
+    searx = new SearxFetcher();
+}
+app.locals.searx = searx;
 app.engine('pug', require('pug').__express)
 // app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

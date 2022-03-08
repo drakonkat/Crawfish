@@ -1,5 +1,5 @@
 const express = require('express');
-const {mapTorrent, TORRENTS_KEY} = require("./classes/utility");
+const {mapTorrent, TORRENTS_KEY, supportedFormats, getExtension, simpleHash} = require("./classes/utility");
 
 const router = express.Router();
 
@@ -36,7 +36,7 @@ router.post('/add', (req, res, next) => {
             res.status(200).json(req.body);
         }
     } catch (e) {
-        console.error("AJBDKASDA", e)
+        console.error("Error adding torrent", e)
     }
 });
 router.post('/pause', (req, res, next) => {
@@ -106,6 +106,13 @@ router.get('/check-status', (req, res, next) => {
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
         let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
+        torrents.forEach((t) => {
+            if (t && t.files) {
+                t.files.forEach((f) => {
+                    f.id=simpleHash(t.infoHash, f.name);
+                })
+            }
+        })
         res.status(200).json(torrents)
     } catch (e) {
         console.error(e)
