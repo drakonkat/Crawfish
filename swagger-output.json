@@ -130,7 +130,7 @@
               "properties": {
                 "magnet": {
                   "type": "string",
-                  "example": "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent"
+                  "example": "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintelbuild&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent"
                 }
               },
               "required": [
@@ -573,6 +573,206 @@
             "schema": {
               "type": "boolean",
               "example": true,
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/list": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Return the list of the file contained in the torrent",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Configuration data",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "done": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "streamable": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "name": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "id": {
+                    "type": "string",
+                    "example": "asdkjasndlas - Nome"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/open": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Open the file in the local system",
+        "description": "",
+        "parameters": [
+          {
+            "name": "fileid",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/file/stream": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Open the file in the local system",
+        "description": "",
+        "parameters": [
+          {
+            "name": "fileid",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/file/search": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Return a search from indexed torrent, based on searx",
+        "description": "",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration data",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "https://xxx.xxx/description.php?id=56842669"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Texas Chainsaw Massacre (2022) [720p] [WEBRip]"
+                  },
+                  "seed": {
+                    "type": "string",
+                    "example": "91"
+                  },
+                  "leech": {
+                    "type": "string",
+                    "example": "31"
+                  },
+                  "magnetlink": {
+                    "type": "string",
+                    "example": "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://tracker.opentrackr.org:1337&tr=udp://explodie.org:6969&tr=udp://tracker.empire-js.us:1337&tr=wss://tracker.btorrent.xyz&tr=wss://tracker.openwebtorrent.com&ws=https://webtorrent.io/torrents/&xs=https://webtorrent.io/torrents/sintel.torrent"
+                  },
+                  "template": {
+                    "type": "string",
+                    "example": "torrent.html"
+                  },
+                  "publishedDate": {
+                    "type": "string",
+                    "example": "Feb 19, 2022"
+                  },
+                  "filesize": {
+                    "type": "number",
+                    "example": 799469148
+                  },
+                  "engine": {
+                    "type": "string",
+                    "example": "xxx"
+                  },
+                  "parsed_url": {
+                    "type": "array",
+                    "example": [
+                      "https",
+                      "xxx.xxx",
+                      "/description.php",
+                      "",
+                      "id=56842669",
+                      ""
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "engines": {
+                    "type": "array",
+                    "example": [
+                      "xxx"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "positions": {
+                    "type": "array",
+                    "example": [
+                      7
+                    ],
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "score": {
+                    "type": "number",
+                    "example": 0.14285714285714285
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "videos"
+                  },
+                  "pretty_url": {
+                    "type": "string",
+                    "example": "https://xxx.xxx/description.php?id=56842669"
+                  },
+                  "pubdate": {
+                    "type": "string",
+                    "example": "2022-02-19 03:35:55"
+                  }
+                }
+              },
               "xml": {
                 "name": "main"
               }
