@@ -12,7 +12,6 @@ class SearxFetcher {
 
     constructor() {
         axios.get("https://searx.space/data/instances.json").then(res => {
-            console.log("CHECK RESULT: ", true)
             this.configuration.instances = res.data.instances;
             this.reconfigureFetcher().catch(error => {
                 console.error("Error configuring fetcher: ", error && error.message)
