@@ -2,11 +2,12 @@ const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
 const {mapTorrent} = require("./utility");
 const TORRENTS_KEY = "torrent";
+const downloadsFolder = require('downloads-folder');
 
 class ConfigStorage {
     configuration = {
         path: "./config.json",
-        downloadPath: "./Downloads/",
+        downloadPath: downloadsFolder() || "./Downloads/",
         opts: {
             destroyStoreOnDestroy: false,
             maxConns: 55,        // Max number of connections per torrent (default=55)
@@ -23,7 +24,7 @@ class ConfigStorage {
 
 
     constructor() {
-        console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT)
+        console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
 
         let result = this.readData(this.configuration.path)
         if (result == null) {
