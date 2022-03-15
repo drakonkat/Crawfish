@@ -1,5 +1,5 @@
 variables:
-  IMAGE_VERSION: "1.3.3"
+  IMAGE_VERSION: "1.3.6"
 
 stages:
   - prepare-docker
@@ -17,4 +17,4 @@ express:
     - docker push mauromazzocchetti/webtorrent-express-api:latest
     - docker logout
   only:
-    - master
+    - main
