@@ -28,6 +28,7 @@ const createWindow = () => {
         mainWindow.loadURL(
             "http://localhost:3000/build/index.html"
         );
+        mainWindow.webContents.openDevTools();
     } else {
         require("child_process").fork(
             `${path.join(__dirname, "../bin/www")}`,

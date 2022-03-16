@@ -11,12 +11,6 @@
   "build": {
     "appId": "com.tnd.torquix",
     "productName": "TorQuiX",
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "./public/build/favicon.ico",
-      "uninstallerIcon": "./public/build/favicon.ico"
-    },
     "icon": "public/build/logo512.png",
     "copyright": "Copyright 20120-2022 TND"
   },
