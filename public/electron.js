@@ -3,6 +3,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
+const cp = require("child_process");
 
 let mainWindow;
 const createWindow = () => {
@@ -18,24 +19,16 @@ const createWindow = () => {
      * Controllo di versione
      */
     if (isDev) {
-        require("child_process").fork(
-            "../bin/www",
-            [],
-            {
-                stdio: ["pipe", "pipe", "pipe", "ipc"],
-            }
+        cp.fork(
+            "bin/www"
         );
         mainWindow.loadURL(
             "http://localhost:3000/build/index.html"
         );
         mainWindow.webContents.openDevTools();
     } else {
-        require("child_process").fork(
-            `${path.join(__dirname, "../bin/www")}`,
-            [],
-            {
-                stdio: ["pipe", "pipe", "pipe", "ipc"],
-            }
+        cp.fork(
+            `${path.join(__dirname, "../bin/www")}`
         );
         mainWindow.loadURL(
             "http://localhost:3000/build/index.html"
