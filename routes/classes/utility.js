@@ -20,6 +20,8 @@ const mapTorrent = (x) => {
                 length: y.length,
                 path: y.path,
                 progress: y.progress,
+                streamable: supportedFormats.includes(getExtension(y.name)),
+                done:y.progress >= 1
             }
         })
     }

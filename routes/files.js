@@ -75,7 +75,7 @@ router.get('/open', async (req, res, next) => {
 });
 
 
-router.get('/stream', async (req, res, next) => {
+router.get('/stream/:filename', async (req, res, next) => {
     /*
         #swagger.tags = ['files']
         #swagger.summary = "Open the file in the local system"
