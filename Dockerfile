@@ -1,6 +1,6 @@
 FROM node:16.8.0
 WORKDIR /usr/src
-RUN git clone https://gitlab.com/t5257/webtorrent-web-gui-standalone.git
+RUN git clone https://gitlab.com/tndsite/webtorrent-web-gui-standalone.git
 WORKDIR /usr/src/webtorrent-web-gui-standalone/
 RUN rm ./package-lock.json
 RUN npm install
