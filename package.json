@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "scripts": {
     "start": "npx nodemon --ignore config.json ./bin/www",
@@ -11,7 +11,7 @@
   },
   "build": {
     "appId": "com.tnd.torquix",
-    "productName": "TorQuiX",
+    "productName": "TorQuiX - 1.4.1",
     "win": {
       "target": "nsis",
       "requestedExecutionLevel": "requireAdministrator"
