@@ -17,7 +17,7 @@
   },
   "build": {
     "appId": "com.tnd.torquix",
-    "productName": "TorQuiX - 1.4.2",
+    "productName": "TorQuiX - 1.5.0",
     "win": {
       "target": "nsis",
       "requestedExecutionLevel": "requireAdministrator"
