@@ -6,6 +6,7 @@ const downloadsFolder = require('downloads-folder');
 
 class ConfigStorage {
     configuration = {
+        torrentPath: "./torrent",
         path: "./config.json",
         downloadPath: downloadsFolder() || "./Downloads/",
         opts: {
@@ -62,6 +63,15 @@ class ConfigStorage {
                 torrents.push(t)
             }
             this.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
+            if (!this.configuration.torrentPath) {
+                this.setVariable("torrentPath", "./torrent")
+            }
+            if (!fs.existsSync(this.configuration.torrentPath)) {
+                fs.mkdirSync(this.configuration.torrentPath, {recursive: true});
+            }
+            let path = this.configuration.torrentPath + "/" + torrent.name + ".torrent";
+            let file = fs.createWriteStream(path);
+            file.write(torrent.torrentFile);
         })
     }
 

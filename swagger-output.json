@@ -210,6 +210,33 @@
         }
       }
     },
+    "/torrent/get-file/{filename}": {
+      "get": {
+        "tags": [
+          "Downloads"
+        ],
+        "summary": "Return the torrent file of selected value",
+        "description": "From the infoHash return the file to download",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "torrentId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The torrent file"
+          }
+        }
+      }
+    },
     "/torrent/destroy": {
       "post": {
         "tags": [
@@ -644,7 +671,7 @@
         }
       }
     },
-    "/file/stream": {
+    "/file/stream/{filename}": {
       "get": {
         "tags": [
           "files"
@@ -652,6 +679,12 @@
         "summary": "Open the file in the local system",
         "description": "",
         "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "fileid",
             "in": "query",

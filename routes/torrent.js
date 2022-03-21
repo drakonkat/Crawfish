@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const {mapTorrent, TORRENTS_KEY, supportedFormats, getExtension, simpleHash} = require("./classes/utility");
 
@@ -26,7 +27,7 @@ router.post('/add', (req, res, next) => {
     try {
         let {magnet, path} = req.body;
         if (magnet && magnet.includes("magnet:?")) {
-            magnet = magnet + "&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F"
+            magnet = magnet + "&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.quix.cf"
         }
         let temp = req.app.locals.storage.liveData.client.get(magnet);
         if (temp) {
@@ -109,11 +110,41 @@ router.get('/check-status', (req, res, next) => {
         torrents.forEach((t) => {
             if (t && t.files) {
                 t.files.forEach((f) => {
-                    f.id=simpleHash(t.infoHash, f.name);
+                    f.id = simpleHash(t.infoHash, f.name);
                 })
             }
         })
         res.status(200).json(torrents)
+    } catch (e) {
+        console.error(e)
+    }
+});
+router.get('/get-file/:filename', (req, res, next) => {
+    /*
+        #swagger.tags = ["Downloads"]
+        #swagger.summary = "Return the torrent file of selected value"
+        #swagger.description = "From the infoHash return the file to download",
+        #swagger.responses[200] = {
+        description: "The torrent file"
+        }
+    }
+    */
+    try {
+        let torrentId = req.query.torrentId
+        try {
+            let opened = false;
+            let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
+            let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+            torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
+            torrents.forEach((t) => {
+                if (!opened && t && t.infoHash === torrentId) {
+                    res.download(path.resolve(req.app.locals.storage.getConf().torrentPath + "/" + t.name + ".torrent"));
+                    opened = true;
+                }
+            })
+        } catch (e) {
+            console.error(e)
+        }
     } catch (e) {
         console.error(e)
     }

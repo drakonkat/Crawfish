@@ -1,7 +1,13 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
+  "keywords": [
+    "torrent",
+    "docker",
+    "express",
+    "stream"
+  ],
   "scripts": {
     "start": "npx nodemon --ignore config.json ./bin/www",
     "start-electron": "electron .",
@@ -11,7 +17,7 @@
   },
   "build": {
     "appId": "com.tnd.torquix",
-    "productName": "TorQuiX - 1.4.1",
+    "productName": "TorQuiX - 1.4.2",
     "win": {
       "target": "nsis",
       "requestedExecutionLevel": "requireAdministrator"

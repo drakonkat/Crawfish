@@ -70,7 +70,7 @@ class SearxFetcher {
             wait();
         });
         await promise;
-        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=nyaa,1337x,kickass,piratebay,torrentz,yggtorrent");
+        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=nyaa,1337x");
         return res.data.results
     }
 

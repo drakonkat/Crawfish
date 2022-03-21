@@ -30,6 +30,7 @@ benchmarks/graphs
 .idea
 /swagger-output.json
 /Downloads
+/torrent
 config.json
 /Build
 /dist
