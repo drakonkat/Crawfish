@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "keywords": [
     "torrent",
@@ -16,8 +16,8 @@
     "bundle": "electron-builder"
   },
   "build": {
-    "appId": "com.tnd.torquix",
-    "productName": "TorQuiX - 1.5.0",
+    "appId": "com.tnd.crawfish",
+    "productName": "CrawFish",
     "win": {
       "target": "nsis",
       "requestedExecutionLevel": "requireAdministrator"
