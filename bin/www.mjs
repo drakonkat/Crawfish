@@ -4,10 +4,9 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('webtorrent-express-api:server');
-var http = require('http');
-var open = require('open');
+import  app from '../app.js';
+import http from 'http';
+import open from 'open';
 
 process.env.NODE_ENV = "development"
 /**

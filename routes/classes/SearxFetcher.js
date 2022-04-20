@@ -1,8 +1,5 @@
-const fs = require('fs');
-const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent} = require("./utility");
-const axios = require("axios");
-const TORRENTS_KEY = "torrent";
+import axios from "axios"
+import * as cheerio from 'cheerio';
 
 class SearxFetcher {
     configuration = {
@@ -12,6 +9,7 @@ class SearxFetcher {
 
 
     constructor() {
+        this.fetchFitGirl();
         axios.get("https://searx.space/data/instances.json").then(res => {
             console.log("Founded searx resource", true)
             let array = [];
@@ -39,6 +37,23 @@ class SearxFetcher {
         })
     }
 
+    fetchFitGirl = async () => {
+        console.log("CHECKING FITGIRL")
+        let res = await axios.get("https://fitgirl-repacks.site/")
+        let $ = cheerio.load(res.data)
+        // console.log("CHECKING FITGIRL: ", $('article,.post').each((x,elem)=>console.log($(elem).attr("id"))));
+        $('article,.post').each((x,elem)=> {
+            console.log("CHECK:"+x,  $(elem).attr("id"))
+            $(elem).find('a').each((y,elem2)=> {
+                if($(elem2).text().includes("magnet"))
+                console.log("CHECK:"+y,  $(elem2).attr("href"))
+            })
+
+        });
+
+
+    }
+
     reconfigureFetcher = async () => {
         for (let i in this.configuration.instances) {
             let instance = this.configuration.instances[i]
@@ -59,7 +74,7 @@ class SearxFetcher {
 
     search = async (q = "2022") => {
         let promise = new Promise((resolve, reject) => {
-            let wait = ()=>{
+            let wait = () => {
                 if (this.configuration.ready) {
                     return resolve();
                 } else {
@@ -70,10 +85,10 @@ class SearxFetcher {
             wait();
         });
         await promise;
-        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=nyaa,1337x");
+        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=1337x,nyaa,yggtorrent,torrentz,solidtorrents");
         return res.data.results
     }
 
 }
 
-module.exports = SearxFetcher;
+export default SearxFetcher;

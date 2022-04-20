@@ -8,8 +8,9 @@
     "express",
     "stream"
   ],
+  "type": "module",
   "scripts": {
-    "start": "npx nodemon --ignore config.json ./bin/www",
+    "start": "npx nodemon --ignore config.json ./bin/www.mjs",
     "start-electron": "electron .",
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
@@ -48,8 +49,8 @@
     "pug": "^3.0.2",
     "qs": "^6.10.3",
     "swagger-ui-express": "^4.2.0",
-    "webtorrent": "^1.5.8",
-    "webtorrent-hybrid": "^4.1.3"
+    "webtorrent": "^1.8.13",
+    "webtorrent-hybrid": "^5.0.2"
   },
   "devDependencies": {
     "electron": "^17.1.0",

@@ -1,6 +1,5 @@
-const {exec, spawn} = require("child_process");
-const express = require('express');
-const ConfigStorage = require("./classes/ConfigStorage");
+import express from 'express';
+
 const router = express.Router();
 
 
@@ -40,4 +39,4 @@ router.post('/', async (req, res, next) => {
     res.status(200).json(true)
 });
 
-module.exports = router;
+export default router;

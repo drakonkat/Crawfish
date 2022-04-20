@@ -1,12 +1,9 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require("fs");
-const open = require('open')
-const {exec, spawn} = require("child_process");
-const express = require('express');
-const ConfigStorage = require("./classes/ConfigStorage");
-const router = express.Router();
+import axios from 'axios'
+import FormData from 'form-data'
+import fs from "fs"
+import express from 'express'
 
+const router = express.Router();
 const VARIABLE_CONF_STREAM = "configurationStream"
 const TORRENTS_KEY = "torrent";
 
@@ -218,4 +215,4 @@ router.post('/config', async (req, res, next) => {
     }
 });
 
-module.exports = router;
+export default router;

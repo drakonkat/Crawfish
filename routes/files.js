@@ -1,11 +1,7 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require("fs");
-const open = require('open')
-const {exec, spawn} = require("child_process");
-const express = require('express');
-const ConfigStorage = require("./classes/ConfigStorage");
-const {TORRENTS_KEY, mapTorrent, getExtension, supportedFormats, simpleHash} = require("./classes/utility");
+import open from 'open'
+import express from 'express'
+import {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} from "./classes/utility.js";
+
 const router = express.Router();
 
 router.get('/list', async (req, res, next) => {
@@ -148,4 +144,4 @@ router.get('/search', async (req, res, next) => {
     }
 });
 
-module.exports = router;
+export default router;

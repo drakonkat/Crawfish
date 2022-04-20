@@ -1,8 +1,9 @@
-const fs = require('fs');
-const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent} = require("./utility");
+import fs from 'fs';
+import WebTorrent from 'webtorrent-hybrid';
+import {mapTorrent} from"./utility.js";
+import downloadsFolder from 'downloads-folder';
+
 const TORRENTS_KEY = "torrent";
-const downloadsFolder = require('downloads-folder');
 
 class ConfigStorage {
     configuration = {
@@ -147,4 +148,4 @@ class ConfigStorage {
     }
 }
 
-module.exports = ConfigStorage;
+export default ConfigStorage;
