@@ -1,5 +1,6 @@
 import axios from "axios"
 import * as cheerio from 'cheerio';
+import {crawlFitGirl} from "./indexers.js";
 
 class SearxFetcher {
     configuration = {
@@ -9,7 +10,7 @@ class SearxFetcher {
 
 
     constructor() {
-        this.fetchFitGirl();
+        crawlFitGirl();
         axios.get("https://searx.space/data/instances.json").then(res => {
             console.log("Founded searx resource", true)
             let array = [];
@@ -37,22 +38,6 @@ class SearxFetcher {
         })
     }
 
-    fetchFitGirl = async () => {
-        console.log("CHECKING FITGIRL")
-        let res = await axios.get("https://fitgirl-repacks.site/")
-        let $ = cheerio.load(res.data)
-        // console.log("CHECKING FITGIRL: ", $('article,.post').each((x,elem)=>console.log($(elem).attr("id"))));
-        $('article,.post').each((x,elem)=> {
-            console.log("CHECK:"+x,  $(elem).attr("id"))
-            $(elem).find('a').each((y,elem2)=> {
-                if($(elem2).text().includes("magnet"))
-                console.log("CHECK:"+y,  $(elem2).attr("href"))
-            })
-
-        });
-
-
-    }
 
     reconfigureFetcher = async () => {
         for (let i in this.configuration.instances) {

@@ -813,6 +813,33 @@
           }
         }
       }
+    },
+    "/file/games/{source}/": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Indexed search of games parsed from games website",
+        "description": "",
+        "parameters": [
+          {
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   }
 }

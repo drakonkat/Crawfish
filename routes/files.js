@@ -1,6 +1,7 @@
 import open from 'open'
 import express from 'express'
 import {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} from "./classes/utility.js";
+import {crawlFitGirl} from "./classes/indexers.js";
 
 const router = express.Router();
 
@@ -144,4 +145,39 @@ router.get('/search', async (req, res, next) => {
     }
 });
 
+
+router.get('/games/:source/', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Files']
+        #swagger.summary = "Indexed search of games parsed from games website"
+        #swagger.responses[200] = {
+        description: "Configuration data",
+        schema: [{
+		"name": "Cyberpunk 2077",
+		"description": "91",
+		"originalSize": "42.2 GB",
+        "repackSize": "from 17.2 GB [Selective Download]",
+		"magnet": []
+        }
+    */
+    try {
+        let source = req.params.source
+        let q = req && req.query && req.query.q
+        let results;
+        switch (source) {
+            case "FITGIRL":
+            default:
+                results = await crawlFitGirl(q)
+                break;
+        }
+        console.log("CHECK RESULT: ", results)
+        res.status(200).json(results)
+    } catch (e) {
+        console.error(e)
+    }
+});
+
 export default router;
+
+
+
