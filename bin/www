@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-const  app = require('../app.js');
-const http = require('http');
-const open = require('open');
+var app = require('../app');
+var http = require('http');
+var open = require('open');
 process.env.NODE_ENV = "development"
 /**
  * Get port from environment and store in Express.
