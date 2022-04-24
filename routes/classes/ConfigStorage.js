@@ -55,7 +55,6 @@ class ConfigStorage {
 
     start() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
-
         let result = this.readData(this.configuration.path)
         if (result == null) {
             result = this.configuration;
