@@ -1,6 +1,6 @@
 const path = require('path')
-const express = require('express');
-const {mapTorrent, TORRENTS_KEY, supportedFormats, getExtension, simpleHash} = require("./classes/utility");
+const express = require('express')
+const {mapTorrent, simpleHash, TORRENTS_KEY} = require("./classes/utility")
 
 const router = express.Router();
 
@@ -246,4 +246,4 @@ router.post('/remove', (req, res, next) => {
     res.status(200).json(req.body);
 });
 
-module.exports = router;
+module.exports =  router;

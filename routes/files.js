@@ -1,11 +1,8 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require("fs");
-const open = require('open')
-const {exec, spawn} = require("child_process");
+const open = require('open');
 const express = require('express');
-const ConfigStorage = require("./classes/ConfigStorage");
-const {TORRENTS_KEY, mapTorrent, getExtension, supportedFormats, simpleHash} = require("./classes/utility");
+const {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} = require("./classes/utility");
+const {crawlFitGirl} = require("./classes/indexers");
+
 const router = express.Router();
 
 router.get('/list', async (req, res, next) => {
@@ -51,7 +48,7 @@ router.get('/open', async (req, res, next) => {
         #swagger.tags = ['files']
         #swagger.summary = "Open the file in the local system"
         #swagger.responses[200] = {
-        description: "Open the file in the localsystem and use the id from the file to open it as queryparam named 'fileid'"
+        description: "Open the file in the localsystem and use the id  = require( the file to open it as queryparam named 'fileid'"
     */
     try {
         let opened = false;
@@ -80,7 +77,7 @@ router.get('/stream/:filename', async (req, res, next) => {
         #swagger.tags = ['files']
         #swagger.summary = "Open the file in the local system"
         #swagger.responses[200] = {
-        description: "Open the file in the localsystem and use the id from the file to open it as queryparam named 'fileid'"
+        description: "Open the file in the localsystem and use the id  = require( the file to open it as queryparam named 'fileid'"
     */
     try {
         let opened = false;
@@ -106,7 +103,7 @@ router.get('/stream/:filename', async (req, res, next) => {
 router.get('/search', async (req, res, next) => {
     /*
         #swagger.tags = ['Files']
-        #swagger.summary = "Return a search from indexed torrent, based on searx"
+        #swagger.summary = "Return a search  = require( indexed torrent, based on searx"
         #swagger.responses[200] = {
         description: "Configuration data",
         schema: [{
@@ -148,4 +145,38 @@ router.get('/search', async (req, res, next) => {
     }
 });
 
-module.exports = router;
+
+router.get('/games/:source/', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Files']
+        #swagger.summary = "Indexed search of games parsed  = require( games website"
+        #swagger.responses[200] = {
+        description: "Configuration data",
+        schema: [{
+		"name": "Cyberpunk 2077",
+		"description": "91",
+		"originalSize": "42.2 GB",
+        "repackSize": " = require( 17.2 GB [Selective Download]",
+		"magnet": []
+        }
+    */
+    try {
+        let source = req.params.source
+        let q = req && req.query && req.query.q
+        let results;
+        switch (source) {
+            case "FITGIRL":
+            default:
+                results = await crawlFitGirl(q)
+                break;
+        }
+        res.status(200).json(results)
+    } catch (e) {
+        console.error(e)
+    }
+});
+
+module.exports =  router;
+
+
+

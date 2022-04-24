@@ -1,8 +1,6 @@
-const fs = require('fs');
-const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent} = require("./utility");
+const {crawlFitGirl} = require("./indexers");
 const axios = require("axios");
-const TORRENTS_KEY = "torrent";
+
 
 class SearxFetcher {
     configuration = {
@@ -12,6 +10,7 @@ class SearxFetcher {
 
 
     constructor() {
+        crawlFitGirl();
         axios.get("https://searx.space/data/instances.json").then(res => {
             console.log("Founded searx resource", true)
             let array = [];
@@ -39,12 +38,13 @@ class SearxFetcher {
         })
     }
 
+
     reconfigureFetcher = async () => {
         for (let i in this.configuration.instances) {
             let instance = this.configuration.instances[i]
             let instancesKey = instance.url;
             try {
-                let res = await axios.get(instancesKey + "?q=2022&category_files=on&format=json");
+                await axios.get(instancesKey + "?q=2022&category_files=on&format=json");
                 this.configuration.usedInstance = instance
                 this.configuration.usedInstance.host = instancesKey
                 this.configuration.ready = true;
@@ -59,7 +59,7 @@ class SearxFetcher {
 
     search = async (q = "2022") => {
         let promise = new Promise((resolve, reject) => {
-            let wait = ()=>{
+            let wait = () => {
                 if (this.configuration.ready) {
                     return resolve();
                 } else {
@@ -70,10 +70,10 @@ class SearxFetcher {
             wait();
         });
         await promise;
-        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=nyaa,1337x");
+        let res = await axios.get(this.configuration.usedInstance.host + "?q=" + q + "&category_files=on&format=json&engines=1337x,nyaa,yggtorrent,torrentz,solidtorrents");
         return res.data.results
     }
 
 }
 
-module.exports = SearxFetcher;
+module.exports =  SearxFetcher;

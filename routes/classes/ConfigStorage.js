@@ -1,8 +1,29 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
 const {mapTorrent} = require("./utility");
-const TORRENTS_KEY = "torrent";
 const downloadsFolder = require('downloads-folder');
+
+
+const TORRENTS_KEY = "torrent";
+const rtcConfig =
+    {
+        "iceServers": [
+            {
+                "urls": "stun:23.21.150.121"
+            },
+            {
+                urls: [
+                    'stun:stun.l.google.com:19302',
+                    'stun:global.stun.twilio.com:3478'
+                ]
+            },
+            {
+                "username": "admin",
+                "credential": "Password1!",
+                "urls": "turn:185.149.22.163:3478"
+            }
+        ]
+    }
 
 class ConfigStorage {
     configuration = {
@@ -16,7 +37,10 @@ class ConfigStorage {
             webSeeds: true,
             downloadLimit: 1250000,   // Max download speed (bytes/sec) over all torrents (default=-1)
             uploadLimit: 1250000,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
-            torrentPort: 51415
+            torrentPort: 51415,
+            tracker: {
+                rtcConfig: rtcConfig
+            }
         }
     }
     liveData = {
@@ -26,7 +50,6 @@ class ConfigStorage {
 
     constructor() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
-
         let result = this.readData(this.configuration.path)
         if (result == null) {
             result = this.configuration;

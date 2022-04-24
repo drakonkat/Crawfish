@@ -21,17 +21,17 @@ const mapTorrent = (x) => {
                 path: y.path,
                 progress: y.progress,
                 streamable: supportedFormats.includes(getExtension(y.name)),
-                done:y.progress >= 1
+                done: y.progress >= 1
             }
         })
     }
 }
 const TORRENTS_KEY = "torrent";
-const getExtension = (fileName)=>{
+const getExtension = (fileName) => {
     return fileName.substring(fileName.lastIndexOf('.') + 1);
 };
-const supportedFormats = ["mp4", "webm", "m4v","jpg", "gif", "png","m4a", "mp3", "wav"]
-const simpleHash = (id,filename)=>{
+const supportedFormats = ["mp4", "webm", "m4v", "jpg", "gif", "png", "m4a", "mp3", "wav"]
+const simpleHash = (id, filename) => {
     return id + " - " + filename;
 };
 module.exports = {mapTorrent,TORRENTS_KEY,getExtension,supportedFormats, simpleHash}
