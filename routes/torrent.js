@@ -1,6 +1,6 @@
-import path from 'path'
-import express from 'express'
-import {mapTorrent, simpleHash, TORRENTS_KEY} from "./classes/utility.js"
+const path = require('path')
+const express = require('express')
+const {mapTorrent, simpleHash, TORRENTS_KEY} = require("./classes/utility")
 
 const router = express.Router();
 
@@ -246,4 +246,4 @@ router.post('/remove', (req, res, next) => {
     res.status(200).json(req.body);
 });
 
-export default router;
+module.exports =  router;

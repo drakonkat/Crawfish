@@ -4,9 +4,19 @@
  * Module dependencies.
  */
 
-import  app from '../app.js';
-import http from 'http';
-import open from 'open';
+const  app = require('../app.js');
+const http = require('http');
+const open = require('open');
+const log = require('electron-log');
+log.transports.file.resolvePath = () => "main.log";
+console.log = log.log;
+log.catchErrors({
+    showDialog:true,
+    onError: (error, versions, submitIssue) =>{
+        log.error(error)
+    }
+});
+log.info("Main life")
 
 process.env.NODE_ENV = "development"
 /**

@@ -1,7 +1,7 @@
-import axios from 'axios'
-import FormData from 'form-data'
-import fs from "fs"
-import express from 'express'
+const axios = require('axios')
+const FormData = require('form-data')
+const fs = require("fs")
+const express = require('express')
 
 const router = express.Router();
 const VARIABLE_CONF_STREAM = "configurationStream"
@@ -215,4 +215,4 @@ router.post('/config', async (req, res, next) => {
     }
 });
 
-export default router;
+module.exports =  router;

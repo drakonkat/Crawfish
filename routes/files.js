@@ -1,7 +1,7 @@
-import open from 'open'
-import express from 'express'
-import {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} from "./classes/utility.js";
-import {crawlFitGirl} from "./classes/indexers.js";
+const open = require('open');
+const express = require('express');
+const {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} = require("./classes/utility");
+const {crawlFitGirl} = require("./classes/indexers");
 
 const router = express.Router();
 
@@ -48,7 +48,7 @@ router.get('/open', async (req, res, next) => {
         #swagger.tags = ['files']
         #swagger.summary = "Open the file in the local system"
         #swagger.responses[200] = {
-        description: "Open the file in the localsystem and use the id from the file to open it as queryparam named 'fileid'"
+        description: "Open the file in the localsystem and use the id  = require( the file to open it as queryparam named 'fileid'"
     */
     try {
         let opened = false;
@@ -77,7 +77,7 @@ router.get('/stream/:filename', async (req, res, next) => {
         #swagger.tags = ['files']
         #swagger.summary = "Open the file in the local system"
         #swagger.responses[200] = {
-        description: "Open the file in the localsystem and use the id from the file to open it as queryparam named 'fileid'"
+        description: "Open the file in the localsystem and use the id  = require( the file to open it as queryparam named 'fileid'"
     */
     try {
         let opened = false;
@@ -103,7 +103,7 @@ router.get('/stream/:filename', async (req, res, next) => {
 router.get('/search', async (req, res, next) => {
     /*
         #swagger.tags = ['Files']
-        #swagger.summary = "Return a search from indexed torrent, based on searx"
+        #swagger.summary = "Return a search  = require( indexed torrent, based on searx"
         #swagger.responses[200] = {
         description: "Configuration data",
         schema: [{
@@ -149,14 +149,14 @@ router.get('/search', async (req, res, next) => {
 router.get('/games/:source/', async (req, res, next) => {
     /*
         #swagger.tags = ['Files']
-        #swagger.summary = "Indexed search of games parsed from games website"
+        #swagger.summary = "Indexed search of games parsed  = require( games website"
         #swagger.responses[200] = {
         description: "Configuration data",
         schema: [{
 		"name": "Cyberpunk 2077",
 		"description": "91",
 		"originalSize": "42.2 GB",
-        "repackSize": "from 17.2 GB [Selective Download]",
+        "repackSize": " = require( 17.2 GB [Selective Download]",
 		"magnet": []
         }
     */
@@ -170,14 +170,13 @@ router.get('/games/:source/', async (req, res, next) => {
                 results = await crawlFitGirl(q)
                 break;
         }
-        console.log("CHECK RESULT: ", results)
         res.status(200).json(results)
     } catch (e) {
         console.error(e)
     }
 });
 
-export default router;
+module.exports =  router;
 
 
 

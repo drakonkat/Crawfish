@@ -1,6 +1,6 @@
-import axios from "axios"
-import * as cheerio from 'cheerio';
-import {crawlFitGirl} from "./indexers.js";
+const {crawlFitGirl} = require("./indexers");
+const axios = require("axios");
+
 
 class SearxFetcher {
     configuration = {
@@ -44,7 +44,7 @@ class SearxFetcher {
             let instance = this.configuration.instances[i]
             let instancesKey = instance.url;
             try {
-                let res = await axios.get(instancesKey + "?q=2022&category_files=on&format=json");
+                await axios.get(instancesKey + "?q=2022&category_files=on&format=json");
                 this.configuration.usedInstance = instance
                 this.configuration.usedInstance.host = instancesKey
                 this.configuration.ready = true;
@@ -76,4 +76,4 @@ class SearxFetcher {
 
 }
 
-export default SearxFetcher;
+module.exports =  SearxFetcher;

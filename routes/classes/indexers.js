@@ -1,7 +1,7 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
+const cheerio = require("cheerio");
+const axios = require("axios");
 
-export const crawlFitGirl = async (q) => {
+const crawlFitGirl = async (q) => {
     let games = [];
     let link = "https://fitgirl-repacks.site"
     if (q) {
@@ -19,8 +19,8 @@ export const crawlFitGirl = async (q) => {
                 }
             })
             if (linkDetailArticle) {
-                promises.push(async () => {
-                    console.log("finished " + x)
+                promises.push((async () => {
+                    console.log(x+ " finished. Link: "+linkDetailArticle )
                     let res = await axios.get(linkDetailArticle)
                     let $ = cheerio.load(res.data)
                     let gameName = $('.entry-title').text()
@@ -45,20 +45,18 @@ export const crawlFitGirl = async (q) => {
                     })
 
                     if (magnets.length > 0) {
-                        games.push({
+                        games.splice(x,0,{
                             name: gameName,
-                            // description,
+                            description,
                             originalSize,
                             repackSize,
-                            // magnets
+                            magnets
                         })
                     }
-                    console.log("CHECK HERE: ", games)
-                })
+                })())
             }
         });
         await Promise.all(promises)
-        console.log("Returned")
         return games;
     } else {
         $('.category-lossless-repack').each((x, elem) => {
@@ -104,3 +102,5 @@ const parameterToFind = (texts, q) => {
         }
     }
 }
+
+module.exports = {crawlFitGirl}

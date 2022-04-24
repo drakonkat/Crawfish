@@ -34,4 +34,4 @@ const supportedFormats = ["mp4", "webm", "m4v", "jpg", "gif", "png", "m4a", "mp3
 const simpleHash = (id, filename) => {
     return id + " - " + filename;
 };
-export {mapTorrent, TORRENTS_KEY, getExtension, supportedFormats, simpleHash}
+module.exports = {mapTorrent,TORRENTS_KEY,getExtension,supportedFormats, simpleHash}

@@ -1,22 +1,18 @@
-import createError from 'http-errors';
-import express from "express";
-import path from "path";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import logger from "morgan";
-
-import indexRouter from "./routes/index.js";
-import configRouter from "./routes/config.js";
-import torrentRouter from "./routes/torrent.js";
-import categoryRouter from "./routes/category.js";
-import streamRouter from "./routes/stream.js";
-import fileRouter from "./routes/files.js";
-import ConfigStorage from "./routes/classes/ConfigStorage.js";
-import SearxFetcher from "./routes/classes/SearxFetcher.js";
-import pug from "pug";
-import {fileURLToPath} from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const createError = require('http-errors');
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const indexRouter = require("./routes/index");
+const configRouter = require("./routes/config");
+const torrentRouter = require("./routes/torrent");
+const categoryRouter = require("./routes/category");
+const streamRouter = require("./routes/stream");
+const fileRouter = require("./routes/files");
+const ConfigStorage = require("./routes/classes/ConfigStorage");
+const SearxFetcher = require("./routes/classes/SearxFetcher");
+const pug = require("pug");
 const app = express();
 
 // view engine setup
@@ -63,4 +59,6 @@ app.use(function (err, req, res, next) {
     res.json('error');
 });
 
-export default app;
+module.exports = app
+
+;
