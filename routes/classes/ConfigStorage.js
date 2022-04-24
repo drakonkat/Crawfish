@@ -1,4 +1,5 @@
 const fs = require('fs');
+const WebTorrent = require('webtorrent-hybrid');
 const {mapTorrent} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 
@@ -43,17 +44,11 @@ class ConfigStorage {
         }
     }
     liveData = {
-        client: null
+        client: new WebTorrent(this.configuration.opts)
     }
 
 
     constructor() {
-        import('webtorrent-hybrid').then((WebTorrent) => {
-            this.liveData.client = new WebTorrent.default(this.configuration.opts);
-        })
-    }
-
-    start() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
         let result = this.readData(this.configuration.path)
         if (result == null) {

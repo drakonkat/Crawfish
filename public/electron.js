@@ -1,11 +1,9 @@
 const electron = require("electron");
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
-
-
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
 
 let mainWindow;
 const createWindow = () => {
@@ -36,7 +34,6 @@ const createWindow = () => {
         mainWindow.loadURL(
             "http://localhost:3000/build/index.html"
         );
-        mainWindow.webContents.openDevTools();
     }
 
     mainWindow.on("closed", () => (

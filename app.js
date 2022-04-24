@@ -1,18 +1,18 @@
 const createError = require('http-errors');
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const indexRouter = require("./routes/index");
-const configRouter = require("./routes/config");
-const torrentRouter = require("./routes/torrent");
-const categoryRouter = require("./routes/category");
-const streamRouter = require("./routes/stream");
-const fileRouter = require("./routes/files");
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+
+const indexRouter = require('./routes/index');
+const configRouter = require('./routes/config');
+const torrentRouter = require('./routes/torrent');
+const categoryRouter = require('./routes/category');
+const streamRouter = require('./routes/stream');
+const fileRouter = require('./routes/files');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
 const SearxFetcher = require("./routes/classes/SearxFetcher");
-const pug = require("pug");
 const app = express();
 
 // view engine setup
@@ -26,7 +26,7 @@ if (!searx) {
     searx = new SearxFetcher();
 }
 app.locals.searx = searx;
-app.engine('pug', pug.__express)
+app.engine('pug', require('pug').__express)
 // app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(logger('dev'));
@@ -59,6 +59,4 @@ app.use(function (err, req, res, next) {
     res.json('error');
 });
 
-module.exports = app
-
-;
+module.exports = app;

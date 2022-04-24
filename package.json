@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "private": true,
   "keywords": [
     "torrent",
@@ -8,11 +8,11 @@
     "express",
     "stream"
   ],
-  "type": "commonjs",
   "scripts": {
-    "start": "npx nodemon --ignore config.json bin/www",
+    "start": "npx nodemon --ignore config.json ./bin/www",
     "start-electron": "electron .",
     "swagger-autogen": "node swagger.js",
+    "prod": "node ./bin/www-prod",
     "bundle": "electron-builder"
   },
   "build": {
@@ -22,7 +22,6 @@
       "target": "nsis",
       "requestedExecutionLevel": "requireAdministrator"
     },
-    "asar": true,
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
@@ -49,14 +48,13 @@
     "pug": "^3.0.2",
     "qs": "^6.10.3",
     "swagger-ui-express": "^4.2.0",
-    "webtorrent": "^1.8.13",
-    "webtorrent-hybrid": "^5.0.2"
+    "webtorrent": "^1.8.14",
+    "webtorrent-hybrid": "^4.1.3"
   },
   "devDependencies": {
     "electron": "^17.1.0",
     "electron-builder": "^22.14.13",
     "nodemon": "^2.0.15",
-    "swagger-autogen": "^2.13.2",
-    "typescript": "^4.6.3"
+    "swagger-autogen": "^2.13.2"
   }
 }
