@@ -1,4 +1,3 @@
-const {crawlFitGirl} = require("./indexers");
 const axios = require("axios");
 
 
@@ -10,7 +9,6 @@ class SearxFetcher {
 
 
     constructor() {
-        crawlFitGirl();
         axios.get("https://searx.space/data/instances.json").then(res => {
             console.log("Founded searx resource", true)
             let array = [];
@@ -76,4 +74,4 @@ class SearxFetcher {
 
 }
 
-module.exports =  SearxFetcher;
+module.exports = SearxFetcher;
