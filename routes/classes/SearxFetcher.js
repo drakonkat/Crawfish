@@ -1,5 +1,6 @@
 const {crawlFitGirl} = require("./indexers");
 const axios = require("axios");
+const {checkUpdates, isToUpdate} = require("./auto-update-git");
 
 
 class SearxFetcher {
@@ -10,7 +11,7 @@ class SearxFetcher {
 
 
     constructor() {
-        crawlFitGirl();
+        isToUpdate();
         axios.get("https://searx.space/data/instances.json").then(res => {
             console.log("Founded searx resource", true)
             let array = [];
