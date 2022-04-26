@@ -4,6 +4,7 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
+const {autoUpdater} = require("electron-updater")
 
 let mainWindow;
 const createWindow = () => {
@@ -39,6 +40,7 @@ const createWindow = () => {
     mainWindow.on("closed", () => (
         mainWindow = null
     ))
+    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
 }
 
 app.on("ready", createWindow)

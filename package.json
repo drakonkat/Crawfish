@@ -1,7 +1,8 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.5.0",
-  "private": true,
+  "version": "1.5.5",
+  "private": false,
+  "repository": "https://github.com/drakonkat/webtorrent-express-api",
   "keywords": [
     "torrent",
     "docker",
@@ -20,6 +21,9 @@
     "productName": "CrawFish",
     "win": {
       "target": "nsis",
+      "publish": [
+        "github"
+      ],
       "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
@@ -40,6 +44,7 @@
     "debug": "~2.6.9",
     "downloads-folder": "^3.0.1",
     "electron-is-dev": "^2.0.0",
+    "electron-updater": "^5.0.1",
     "express": "~4.16.1",
     "form-data": "^4.0.0",
     "http-errors": "~1.6.3",
