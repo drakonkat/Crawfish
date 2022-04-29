@@ -1,7 +1,9 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.5.5",
+  "version": "1.5.7",
   "private": false,
+  "author": "drakonkat",
+  "description": "Innovative torrent client",
   "repository": "https://github.com/drakonkat/webtorrent-express-api",
   "keywords": [
     "torrent",
@@ -14,7 +16,8 @@
     "start-electron": "electron .",
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
-    "bundle": "electron-builder"
+    "bundle": "electron-builder",
+    "bundleg": "electron-builder -p always"
   },
   "build": {
     "appId": "com.tnd.crawfish",
