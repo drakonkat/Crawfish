@@ -1,8 +1,12 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent} = require("./utility");
+const {mapTorrent, writeFileSyncRecursive} = require("./utility");
 const downloadsFolder = require('downloads-folder');
+const os = require('os')
+const path = require("path");
 
+
+const userDataPath = path.join(os.homedir(), "Crawfish");
 
 const TORRENTS_KEY = "torrent";
 const rtcConfig =
@@ -28,7 +32,7 @@ const rtcConfig =
 class ConfigStorage {
     configuration = {
         torrentPath: "./torrent",
-        path: "./config.json",
+        path: path.join(userDataPath, "config.json"),
         downloadPath: downloadsFolder() || "./Downloads/",
         opts: {
             destroyStoreOnDestroy: false,
@@ -161,7 +165,7 @@ class ConfigStorage {
 
     saveData(name = this.configuration.path, data = {}) {
         try {
-            fs.writeFileSync(name, JSON.stringify(data));
+            writeFileSyncRecursive(name, JSON.stringify(data));
             return true;
         } catch (e) {
             console.error("Error saving file: " + name, data, e)
