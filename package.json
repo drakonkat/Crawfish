@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.5.9",
+  "version": "1.6.0",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
@@ -56,7 +56,7 @@
     "pug": "^3.0.2",
     "qs": "^6.10.3",
     "swagger-ui-express": "^4.2.0",
-    "webtorrent": "^1.8.14",
+    "webtorrent": "^1.8.16",
     "webtorrent-hybrid": "^4.1.3"
   },
   "devDependencies": {
