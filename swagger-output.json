@@ -703,7 +703,7 @@
         "tags": [
           "Files"
         ],
-        "summary": "Return a search from indexed torrent, based on searx",
+        "summary": "Return a search = require( indexed torrent, based on searx",
         "description": "",
         "parameters": [
           {
@@ -819,7 +819,7 @@
         "tags": [
           "Files"
         ],
-        "summary": "Indexed search of games parsed from games website",
+        "summary": "Indexed search of games parsed = require( games website",
         "description": "",
         "parameters": [
           {
