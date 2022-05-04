@@ -4,6 +4,8 @@ const {mapTorrent, writeFileSyncRecursive} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
+const axios = require("axios");
+const {parseTorznabResult} = require("./utility");
 
 
 const userDataPath = path.join(os.homedir(), "Crawfish");

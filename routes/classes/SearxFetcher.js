@@ -22,13 +22,15 @@ class SearxFetcher {
                 }
             }
             this.configuration.instances = array.sort((a, b) => {
-                if (a.timing.search.all.median < b.timing.search.all.median) {
-                    return -1;
+                if (a && a.timing && a.timing.search && a.timing.search.all && b && b.timing && b.timing.search && b.timing.search.all) {
+                    if (a.timing.search.all.median < b.timing.search.all.median) {
+                        return -1;
+                    }
+                    if (a.timing.search.all.median > b.timing.search.all.median) {
+                        return 1;
+                    }
+                    return 0;
                 }
-                if (a.timing.search.all.median > b.timing.search.all.median) {
-                    return 1;
-                }
-                return 0;
             });
             this.reconfigureFetcher().catch(error => {
                 console.error("Error configuring fetcher: ", error && error.message)

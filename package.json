@@ -49,6 +49,7 @@
     "electron-is-dev": "^2.0.0",
     "electron-updater": "^5.0.1",
     "express": "~4.16.1",
+    "fast-xml-parser": "^4.0.7",
     "form-data": "^4.0.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",

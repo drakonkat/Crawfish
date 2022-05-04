@@ -1,7 +1,7 @@
 const open = require('open');
 const express = require('express');
 const {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} = require("./classes/utility");
-const {crawlFitGirl} = require("./classes/indexers");
+const {crawlFitGirl, crawlMovies133x} = require("./classes/indexers");
 
 const router = express.Router();
 
@@ -103,7 +103,7 @@ router.get('/stream/:filename', async (req, res, next) => {
 router.get('/search', async (req, res, next) => {
     /*
         #swagger.tags = ['Files']
-        #swagger.summary = "Return a search  = require( indexed torrent, based on searx"
+        #swagger.summary = "Return a search indexed torrent, based on searx"
         #swagger.responses[200] = {
         description: "Configuration data",
         schema: [{
@@ -139,6 +139,23 @@ router.get('/search', async (req, res, next) => {
     */
     try {
         let results = await req.app.locals.searx.search(req && req.query && req.query.q);
+        res.status(200).json(results)
+    } catch (e) {
+        console.error(e)
+    }
+});
+
+
+router.get('/movie', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Files']
+        #swagger.summary = "Return a result fetched from public 1337x instances"
+        #swagger.responses[200] = {
+        description: "List of result",
+        schema: []
+    */
+    try {
+        let results = await crawlMovies133x(req && req.query && req.query.q);
         res.status(200).json(results)
     } catch (e) {
         console.error(e)

@@ -1,4 +1,6 @@
 const fs = require('fs')
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
+
 const mapTorrent = (x) => {
     return {
         name: x.name,
@@ -69,5 +71,53 @@ function writeFileSyncRecursive(filename, content, charset) {
     fs.writeFileSync(root + filepath, content, charset);
 }
 
+const parseTorznabResult = (data) => {
+    const xmlParser = new XMLParser({
+        ignoreAttributes: false,
+        attributeNamePrefix: "",
+        // attributesGroupName: "group_",
+        parseAttributeValue: true,
+        removeNSPrefix: true
+    });
+    let result = xmlParser.parse(data);
+    let channel = result.rss && result.rss.channel ? result.rss.channel : result.feed;
+    if (Array.isArray(channel)) {
+        channel = channel[0];
+    }
 
-module.exports = {mapTorrent, TORRENTS_KEY, getExtension, supportedFormats, simpleHash, writeFileSyncRecursive}
+
+    let items = channel.item;
+    if (items && !Array.isArray(items)) {
+        items = [items];
+    } else {
+        items = []
+    }
+
+
+    for (let i = 0; i < items.length; i++) {
+        let val = items[i];
+        for (let elem of val.attr) {
+            if (val[elem.name] && !Array.isArray(val[elem.name])) {
+                val[elem.name] = [val[elem.name], elem.value]
+            } else if (val[elem.name] && Array.isArray(val[elem.name])) {
+                val[elem.name].push(elem.value);
+            } else {
+                val[elem.name] = elem.value
+            }
+        }
+        items[i] = val;
+    }
+    delete items.attr;
+    return items;
+};
+
+
+module.exports = {
+    mapTorrent,
+    TORRENTS_KEY,
+    getExtension,
+    supportedFormats,
+    simpleHash,
+    writeFileSyncRecursive,
+    parseTorznabResult
+}
