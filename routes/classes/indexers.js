@@ -96,7 +96,7 @@ const crawlFitGirl = async (q) => {
 }
 
 const crawlMovies133x = async (q) => {
-    let result = await axios.get("https://jackett.drakofeature.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=uyxwnibswpogk8vmjyle9diqb6m7o82u&t=movie&q=" + q + "&attrs=poster,magneturl,language&limit=50&offset=0&cat=2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076")
+    let result = await axios.get("https://jackett.drakofeature.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=uyxwnibswpogk8vmjyle9diqb6m7o82u&t=movie&q=" + q + "&attrs=poster,magneturl,language&cat=2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076")
     return parseTorznabResult(result.data);
 }
 const parameterToFind = (texts, q) => {

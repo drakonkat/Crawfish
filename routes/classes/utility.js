@@ -89,7 +89,7 @@ const parseTorznabResult = (data) => {
     let items = channel.item;
     if (items && !Array.isArray(items)) {
         items = [items];
-    } else {
+    } else if (!items) {
         items = []
     }
 

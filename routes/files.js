@@ -155,8 +155,13 @@ router.get('/movie', async (req, res, next) => {
         schema: []
     */
     try {
-        let results = await crawlMovies133x(req && req.query && req.query.q);
-        res.status(200).json(results)
+        try {
+            let results = await crawlMovies133x(req && req.query && req.query.q);
+            res.status(200).json(results)
+        } catch (e) {
+            let results = await req.app.locals.searx.search(req && req.query && req.query.q);
+            res.status(200).json(results)
+        }
     } catch (e) {
         console.error(e)
     }
@@ -193,7 +198,7 @@ router.get('/games/:source/', async (req, res, next) => {
     }
 });
 
-module.exports =  router;
+module.exports = router;
 
 
 
