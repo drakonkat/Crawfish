@@ -1,7 +1,9 @@
 const open = require('open');
 const express = require('express');
 const {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} = require("./classes/utility");
-const {crawlFitGirl, crawlMovies133x} = require("./classes/indexers");
+const {crawlFitGirl, crawlMovies1337x, crawlTvShow1337x} = require("./classes/indexers");
+const mime = require('mime-types')
+
 
 const router = express.Router();
 
@@ -13,6 +15,7 @@ router.get('/list', async (req, res, next) => {
         description: "Configuration data",
         schema: [{
                 done: true,
+
                 streamable: true,
                 name: true,
                 id:"asdkjasndlas - Nome"
@@ -30,6 +33,7 @@ router.get('/list', async (req, res, next) => {
                     files.push({
                         done: f.progress >= 1,
                         streamable: supportedFormats.includes(getExtension(f.name)),
+                        name: f.name,
                         name: f.name,
                         id: simpleHash(t.infoHash, f.name),
                         torrentMagnet: t.magnet
@@ -156,9 +160,32 @@ router.get('/movie', async (req, res, next) => {
     */
     try {
         try {
-            let results = await crawlMovies133x(req && req.query && req.query.q);
+            let results = await crawlMovies1337x(req && req.query && req.query.q);
             res.status(200).json(results)
         } catch (e) {
+            console.error(e)
+            let results = await req.app.locals.searx.search(req && req.query && req.query.q);
+            res.status(200).json(results)
+        }
+    } catch (e) {
+        console.error(e)
+    }
+});
+
+router.get('/tvshow', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Files']
+        #swagger.summary = "Return a result fetched from public 1337x instances"
+        #swagger.responses[200] = {
+        description: "List of result",
+        schema: []
+    */
+    try {
+        try {
+            let results = await crawlTvShow1337x(req && req.query && req.query.q);
+            res.status(200).json(results)
+        } catch (e) {
+            console.error(e)
             let results = await req.app.locals.searx.search(req && req.query && req.query.q);
             res.status(200).json(results)
         }

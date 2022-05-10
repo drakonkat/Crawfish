@@ -1,11 +1,12 @@
 const path = require('path')
 const express = require('express')
 const {mapTorrent, simpleHash, TORRENTS_KEY} = require("./classes/utility")
+const axios = require("axios");
 
 const router = express.Router();
 
 
-router.post('/add', (req, res, next) => {
+router.post('/add', async (req, res, next) => {
     /*
         #swagger.tags = ['Downloads']
         #swagger.summary = "Add a torrent to the list"
@@ -28,7 +29,17 @@ router.post('/add', (req, res, next) => {
         let {magnet, path} = req.body;
         if (magnet && magnet.includes("magnet:?")) {
             magnet = magnet + "&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.quix.cf"
+        } else if (magnet && magnet.startsWith("http")) {
+            let res = await axios.get(magnet, {
+                maxRedirects: 0,
+                validateStatus: null
+            })
+            if (res && res.headers && res.headers.location && res.headers.location.includes("magnet:?")) {
+                magnet = res.headers.location
+                console.log("Here we are: ", res.headers.location.trim())
+            }
         }
+
         let temp = req.app.locals.storage.liveData.client.get(magnet);
         if (temp) {
             temp.resume()
@@ -246,4 +257,4 @@ router.post('/remove', (req, res, next) => {
     res.status(200).json(req.body);
 });
 
-module.exports =  router;
+module.exports = router;

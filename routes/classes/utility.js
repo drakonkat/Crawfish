@@ -1,5 +1,6 @@
 const fs = require('fs')
 const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
+const mime = require('mime-types')
 
 const mapTorrent = (x) => {
     return {
@@ -24,7 +25,8 @@ const mapTorrent = (x) => {
                 path: y.path,
                 progress: y.progress,
                 streamable: supportedFormats.includes(getExtension(y.name)),
-                done: y.progress >= 1
+                done: y.progress >= 1,
+                mime: mime.lookup(y.name)
             }
         })
     }

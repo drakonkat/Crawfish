@@ -2,6 +2,9 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const {parseTorznabResult} = require("./utility");
 
+
+const API_KEY = "uyxwnibswpogk8vmjyle9diqb6m7o82u";
+
 const crawlFitGirl = async (q) => {
     let games = [];
     let link = "https://fitgirl-repacks.site"
@@ -95,8 +98,14 @@ const crawlFitGirl = async (q) => {
     }
 }
 
-const crawlMovies133x = async (q) => {
-    let result = await axios.get("https://jackett.drakofeature.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=uyxwnibswpogk8vmjyle9diqb6m7o82u&t=movie&q=" + q + "&attrs=poster,magneturl,language&cat=2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076")
+const crawlMovies1337x = async (q) => {
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=movie&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076")
+    return parseTorznabResult(result.data);
+}
+
+
+const crawlTvShow1337x = async (q) => {
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=5000,5030,5040,5070,5080,100005,100006,100007,100009,100041,100071,100074,100075")
     return parseTorznabResult(result.data);
 }
 const parameterToFind = (texts, q) => {
@@ -107,4 +116,4 @@ const parameterToFind = (texts, q) => {
     }
 }
 
-module.exports = {crawlFitGirl, crawlMovies133x}
+module.exports = {crawlFitGirl, crawlMovies1337x, crawlTvShow1337x}
