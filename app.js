@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const configRouter = require('./routes/config');
 const torrentRouter = require('./routes/torrent');
 const categoryRouter = require('./routes/category');
+const indexerRouter = require('./routes/indexer');
 const streamRouter = require('./routes/stream');
 const fileRouter = require('./routes/files');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
@@ -41,6 +42,7 @@ app.use('/config', configRouter);
 app.use('/torrent', torrentRouter);
 app.use('/stream', streamRouter);
 app.use('/category', categoryRouter);
+app.use('/indexer', indexerRouter);
 app.use('/file', fileRouter);
 
 // catch 404 and forward to error handler

@@ -593,10 +593,115 @@
         ],
         "summary": "Create a category",
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "example": "any"
+                },
+                "label": {
+                  "example": "any"
+                },
+                "path": {
+                  "example": "any"
+                },
+                "tag": {
+                  "example": "any"
+                },
+                "tooltip": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "If the operation gone fine",
+            "description": "If the operation gone fine, it will return the id",
+            "schema": {
+              "type": "boolean",
+              "example": true,
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{categoryId}": {
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Edit a category, based on the id of the path",
+        "description": "",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "example": "any"
+                },
+                "label": {
+                  "example": "any"
+                },
+                "path": {
+                  "example": "any"
+                },
+                "tag": {
+                  "example": "any"
+                },
+                "tooltip": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the operation gone fine, true",
+            "schema": {
+              "type": "boolean",
+              "example": true,
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Remove a category, based on the id in the path param",
+        "description": "",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the operation gone fine return true, otherwise false",
             "schema": {
               "type": "boolean",
               "example": true,
@@ -703,7 +808,7 @@
         "tags": [
           "Files"
         ],
-        "summary": "Return a search = require( indexed torrent, based on searx",
+        "summary": "Return a search indexed torrent, based on searx",
         "description": "",
         "parameters": [
           {
@@ -810,6 +915,48 @@
                 "name": "main"
               }
             }
+          }
+        }
+      }
+    },
+    "/file/movie": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Return a result fetched from public 1337x instances",
+        "description": "",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/file/tvshow": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Return a result fetched from public 1337x instances",
+        "description": "",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

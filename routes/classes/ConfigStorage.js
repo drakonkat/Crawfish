@@ -4,13 +4,15 @@ const {mapTorrent, writeFileSyncRecursive} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
-const axios = require("axios");
-const {parseTorznabResult} = require("./utility");
 
 
 const userDataPath = path.join(os.homedir(), "Crawfish");
 
 const TORRENTS_KEY = "torrent";
+const ADDED = "ADDED";
+const CHECK_ERROR = "CHECK_ERROR";
+const ERROR = "ERROR";
+const trackers = ['wss://tracker.btorrent.xyz', 'wss://tracker.openwebtorrent.com', 'wss://tracker.quix.cf', 'wss://tracker.crawfish.cf']
 const rtcConfig =
     {
         "iceServers": [
@@ -27,11 +29,17 @@ const rtcConfig =
                 "username": "admin",
                 "credential": "Password1!",
                 "urls": "turn:185.149.22.163:3478"
+            },
+            {
+                "username": "admin",
+                "credential": "Password1!",
+                "urls": "turn:23.94.202.235:3478"
             }
         ]
     }
 
 class ConfigStorage {
+    queue = []
     configuration = {
         torrentPath: "./torrent",
         path: path.join(userDataPath, "config.json"),
@@ -45,6 +53,7 @@ class ConfigStorage {
             uploadLimit: 1250000,     // Max upload speed (bytes/sec) over all torrents (default=-1)// Enable BEP29 uTorrent transport protocol (default=false)
             torrentPort: 51415,
             tracker: {
+                announce: trackers,
                 rtcConfig: rtcConfig
             }
         }
@@ -52,7 +61,6 @@ class ConfigStorage {
     liveData = {
         client: new WebTorrent(this.configuration.opts)
     }
-
 
     constructor() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
@@ -66,13 +74,16 @@ class ConfigStorage {
 
 
         let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
-        // console.log("Reload old files saved in config: ", torrents)
         torrents.forEach((x, index) => {
             if (!x.paused) {
                 this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
             }
         });
         this.liveData.client.on("error", (e) => {
+            this.queue.forEach(x => {
+                x.state = CHECK_ERROR
+                x.message = e.message
+            })
             console.error("ERROR ON CLIENT: ", e)
         })
         this.liveData.client.on('torrent', (torrent) => {
@@ -102,6 +113,74 @@ class ConfigStorage {
             let file = fs.createWriteStream(path);
             file.write(torrent.torrentFile);
         })
+    }
+
+    async add(magnet, torrentOpts, onTorrent) {
+        try {
+            let id = 0;
+            if (this.queue.length > 0) {
+                let isPresent = true
+                while (isPresent) {
+                    id++
+                    isPresent = this.queue.map(x => x.id).includes(id);
+                }
+            }
+            let element = {
+                id,
+                magnet,
+                state: ADDED
+            }
+            this.queue.push(element);
+
+            this.liveData.client.add(magnet, {
+                    ...torrentOpts,
+                    announce: trackers
+                },
+                (torrent) => {
+                    console.log("On torrent")
+                    let index = this.queue.findIndex(x => x.id === id)
+                    if (index || index === 0) {
+                        console.log("On torrent", index, this.queue.length)
+                        this.queue.splice(index, 1);
+                    }
+                    console.log("On torrent", this.queue.length)
+                    if (onTorrent) {
+                        onTorrent(torrent)
+                    }
+                });
+            let promise = new Promise((resolve, reject) => {
+                let wait = () => {
+                    let index = this.queue.findIndex(x => x.id === id)
+                    if ((index || index === 0) && this.queue[index]) {
+                        if (this.queue[index].state === ADDED) {
+                            if (this.liveData.client.get(magnet)) {
+                                return resolve()
+                            }
+                            console.log("waiting")
+                            setTimeout(wait, 1000);
+                        } else if (this.queue[index].state === CHECK_ERROR) {
+                            if (this.liveData.client.get(magnet)) {
+                                return resolve()
+                            } else {
+                                this.queue[index].state = ERROR
+                                let result = this.queue[index];
+                                this.queue.splice(index, 1);
+                                return reject(result);
+                            }
+                        } else {
+                            return resolve();
+                        }
+                    } else {
+                        return resolve();
+                    }
+                }
+                wait();
+            });
+            let result = await promise;
+            console.log("CHECK INDEX: ", result)
+        } catch (e) {
+            throw e;
+        }
     }
 
     getConf() {

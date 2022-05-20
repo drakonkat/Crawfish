@@ -36,7 +36,7 @@ router.post('/add', async (req, res, next) => {
             })
             if (res && res.headers && res.headers.location && res.headers.location.includes("magnet:?")) {
                 magnet = res.headers.location
-                console.log("Here we are: ", res.headers.location.trim())
+                console.log("Redirected magnet: ", res.headers.location.trim())
             }
         }
 
@@ -44,11 +44,12 @@ router.post('/add', async (req, res, next) => {
         if (temp) {
             temp.resume()
         } else {
-            req.app.locals.storage.liveData.client.add(magnet, {path: path || req.app.locals.storage.getDownload()});
-            res.status(200).json(req.body);
+            await req.app.locals.storage.add(magnet, {path: path || req.app.locals.storage.getDownload()});
         }
+        res.status(200).json(req.body);
     } catch (e) {
         console.error("Error adding torrent", e)
+        res.status(418).json(e);
     }
 });
 router.post('/pause', (req, res, next) => {
