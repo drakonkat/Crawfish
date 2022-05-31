@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
