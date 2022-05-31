@@ -5,7 +5,6 @@ const express = require('express')
 
 const router = express.Router();
 const VARIABLE_CONF_STREAM = "configurationStream"
-const TORRENTS_KEY = "torrent";
 
 
 router.post('/upload', async (req, res, next) => {
@@ -52,7 +51,7 @@ router.post('/upload', async (req, res, next) => {
         } else {
             let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
             if (!torrent) {
-                let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+                let oldTorrent = await req.app.locals.storage.getAllTorrent();
                 torrent = oldTorrent.find(x => x.magnet == req.body.magnet)
             }
             let file = torrent.files.find(x => x.name == req.body.fileName)
@@ -134,7 +133,7 @@ router.post('/check-existing', async (req, res, next) => {
         } else {
             let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
             if (!torrent) {
-                let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+                let oldTorrent = await req.app.locals.storage.getAllTorrent();
                 torrent = oldTorrent.find(x => x.magnet == req.body.magnet)
             }
             let file = torrent.files.find(x => x.name == req.body.fileName)

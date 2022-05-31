@@ -52,7 +52,7 @@ router.post('/add', async (req, res, next) => {
         res.status(418).json(e);
     }
 });
-router.post('/pause', (req, res, next) => {
+router.post('/pause', async (req, res, next) => {
     /*
         #swagger.tags = ['Downloads']
         #swagger.summary = "Pause a torrent in the list"
@@ -72,19 +72,25 @@ router.post('/pause', (req, res, next) => {
     */
     try {
         console.debug('Body:', req.body);
+        let {db} = req.app.locals.storage.liveData
         let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
         if (temp) {
             let t = mapTorrent(temp);
-            let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-            torrents.forEach((x, index) => {
-                if (x.magnet == t.magnet) {
-                    torrents[index] = t;
-                    torrents[index].paused = true;
-                    torrents[index].downloadSpeed = 0;
-                    torrents[index].uploadSpeed = 0;
-                }
-            })
-            req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
+            let foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+            if (foundedTorrent) {
+                foundedTorrent = {
+                    ...t, _rev: foundedTorrent._rev,
+                    _id: TORRENTS_KEY + t.infoHash
+                };
+                foundedTorrent.paused = true;
+                foundedTorrent.downloadSpeed = 0;
+                foundedTorrent.uploadSpeed = 0;
+            } else {
+                await db.put({
+                    ...t,
+                    _id: TORRENTS_KEY + t.infoHash
+                })
+            }
             temp.destroy()
         }
         res.status(200).json(req.body);
@@ -93,7 +99,7 @@ router.post('/pause', (req, res, next) => {
     }
 });
 
-router.get('/check-status', (req, res, next) => {
+router.get('/check-status', async (req, res, next) => {
     /*
         #swagger.tags = ["Downloads"]
         #swagger.summary = "Check the status of the torrents"
@@ -117,7 +123,7 @@ router.get('/check-status', (req, res, next) => {
     */
     try {
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
-        let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
         torrents.forEach((t) => {
             if (t && t.files) {
@@ -131,7 +137,7 @@ router.get('/check-status', (req, res, next) => {
         console.error(e)
     }
 });
-router.get('/get-file/:filename', (req, res, next) => {
+router.get('/get-file/:filename', async (req, res, next) => {
     /*
         #swagger.tags = ["Downloads"]
         #swagger.summary = "Return the torrent file of selected value"
@@ -146,7 +152,7 @@ router.get('/get-file/:filename', (req, res, next) => {
         try {
             let opened = false;
             let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
-            let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+            let oldTorrent = await req.app.locals.storage.getAllTorrent();
             torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
             torrents.forEach((t) => {
                 if (!opened && t && t.infoHash === torrentId) {
@@ -163,7 +169,7 @@ router.get('/get-file/:filename', (req, res, next) => {
 });
 
 
-router.post('/check-status', (req, res, next) => {
+router.post('/check-status', async (req, res, next) => {
     /*
         #swagger.tags = ["Downloads"]
         #swagger.summary = "Check the status of a single torrent"
@@ -196,7 +202,7 @@ router.post('/check-status', (req, res, next) => {
         let magnet = req.body.magnet
         let torrent = req.app.locals.storage.liveData.client.get(magnet)
         if (!torrent) {
-            let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+            let oldTorrent = await req.app.locals.storage.getAllTorrent();
             torrent = oldTorrent.find(x => x.magnet == magnet)
         }
         res.status(200).json(mapTorrent(torrent))
@@ -205,7 +211,7 @@ router.post('/check-status', (req, res, next) => {
     }
 });
 
-router.post('/destroy', (req, res, next) => {
+router.post('/destroy', async (req, res, next) => {
     /*
         #swagger.tags = ['Downloads']
         #swagger.summary = "Remove a torrent in the list"
@@ -224,15 +230,22 @@ router.post('/destroy', (req, res, next) => {
         }
     */
     console.debug('Body:', req.body);
-    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-    torrents = torrents.filter(x => x.magnet != req.body.magnet)
-    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-    req.app.locals.storage.liveData.client.get(req.body.magnet).destroy({destroyStore: true});
+    let {db} = req.app.locals.storage.liveData
+    let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
+    if (torrent) {
+        try {
+            let doc = await db.get(TORRENTS_KEY + torrent.infoHash);
+            await db.remove(doc);
+        } catch (err) {
+            console.log(err);
+        }
+        torrent.destroy({destroyStore: true});
+    }
     res.status(200).json(req.body);
 });
 
 
-router.post('/remove', (req, res, next) => {
+router.post('/remove', async (req, res, next) => {
     /*
         #swagger.tags = ['Downloads']
         #swagger.summary = "Remove a torrent in the list, keeping the data"
@@ -251,10 +264,17 @@ router.post('/remove', (req, res, next) => {
         }
     */
     console.debug('Body:', req.body);
-    let torrents = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
-    torrents = torrents.filter(x => x.magnet != req.body.magnet)
-    req.app.locals.storage.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-    req.app.locals.storage.liveData.client.get(req.body.magnet).destroy();
+    let {db} = req.app.locals.storage.liveData
+    let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
+    if (torrent) {
+        try {
+            let doc = await db.get(TORRENTS_KEY + torrent.infoHash);
+            await db.remove(doc);
+        } catch (err) {
+            console.log(err);
+        }
+        torrent.destroy();
+    }
     res.status(200).json(req.body);
 });
 

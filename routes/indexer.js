@@ -1,6 +1,13 @@
 const express = require("express");
-const {crawlFitGirl, crawlTvShow1337x, crawlMovies1337x} = require("./classes/indexers");
-const {MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC} = require("./classes/type");
+const {
+    crawlFitGirl,
+    crawlTvShow1337x,
+    crawlMovies1337x,
+    crawlGames1337x,
+    jackettCrawl,
+    categories
+} = require("./classes/indexers");
+const {MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x} = require("./classes/type");
 const router = express.Router();
 
 const filterIndexing = (elem) => {
@@ -42,16 +49,25 @@ router.get('/:source', async (req, res, next) => {
         let q = req && req.query && req.query.q
         let results;
         switch (source) {
+            case _1337x:
             case GENERIC:
+                results = (await jackettCrawl(categories._1337x.name, null, q));
+                break;
+            case SEARX:
                 results = (await req.app.locals.searx.search(req && req.query && req.query.q));
                 break;
+            case MUSIC:
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.music, q));
+                break;
             case MOVIES:
-                results = (await crawlMovies1337x(q));
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.movies, q));
                 break;
             case TVSHOW:
-                results = (await crawlTvShow1337x(q));
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.tvShow, q));
                 break;
             case GAMES:
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.games, q));
+                break;
             case FITGIRL:
             default:
                 results = (await crawlFitGirl(q))
@@ -71,7 +87,7 @@ router.get('/', (req, res, next) => {
         schema: ["MOVIES","GAMES","TVSHOW"]
     */
     try {
-        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC])
+        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x])
     } catch (e) {
         console.error(e)
     }

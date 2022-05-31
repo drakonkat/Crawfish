@@ -55,6 +55,7 @@
     "mime-types": "^2.1.35",
     "morgan": "~1.9.1",
     "open": "^8.4.0",
+    "pouchdb": "^7.3.0",
     "pug": "^3.0.2",
     "qs": "^6.10.3",
     "swagger-ui-express": "^4.2.0",

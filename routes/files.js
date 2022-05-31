@@ -1,8 +1,7 @@
 const open = require('open');
 const express = require('express');
-const {getExtension, mapTorrent, simpleHash, supportedFormats, TORRENTS_KEY} = require("./classes/utility");
+const {getExtension, mapTorrent, simpleHash, supportedFormats} = require("./classes/utility");
 const {crawlFitGirl, crawlMovies1337x, crawlTvShow1337x} = require("./classes/indexers");
-const mime = require('mime-types')
 
 
 const router = express.Router();
@@ -24,7 +23,7 @@ router.get('/list', async (req, res, next) => {
     */
     try {
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
-        let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
         let files = [];
         torrents.forEach((t) => {
@@ -57,7 +56,7 @@ router.get('/open', async (req, res, next) => {
     try {
         let opened = false;
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
-        let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
         torrents.forEach((t) => {
             if (!opened && t && t.files) {
@@ -86,7 +85,7 @@ router.get('/stream/:filename', async (req, res, next) => {
     try {
         let opened = false;
         let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
-        let oldTorrent = JSON.parse(req.app.locals.storage.getVariable(TORRENTS_KEY) || "[]");
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
         torrents.forEach((t) => {
             if (!opened && t && t.files) {

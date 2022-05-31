@@ -4,6 +4,16 @@ const {parseTorznabResult} = require("./utility");
 
 
 const API_KEY = "uyxwnibswpogk8vmjyle9diqb6m7o82u";
+const categories = {
+    _1337x: {
+        name: "1337x",
+        tvShow: "5000,5030,5040,5070,5080,100005,100006,100007,100009,100041,100071,100074,100075",
+        movies: "2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076",
+        games: "4050,100010,100011,100012,100013,100014,100015,100016,100017,100043,100044,100045,100046,100067,100072,100077,100082",
+        music: "100022,100023,100024,100025,100026,100027,100053,100058,100059,100060,100068,100069"
+    }
+}
+
 
 const crawlFitGirl = async (q) => {
     let games = [];
@@ -99,15 +109,40 @@ const crawlFitGirl = async (q) => {
 }
 
 const crawlMovies1337x = async (q) => {
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=movie&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=2000,2010,2030,2040,2045,2060,2070,100001,100002,100003,100004,100042,100054,100055,100066,100070,100073,100076")
+    let cat = categories._1337x.movies
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=movie&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
 
 
 const crawlTvShow1337x = async (q) => {
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=5000,5030,5040,5070,5080,100005,100006,100007,100009,100041,100071,100074,100075")
+    let cat = categories._1337x.tvShow
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
+
+const crawlGames1337x = async (q) => {
+    let cat = categories._1337x.games
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    return parseTorznabResult(result.data);
+}
+
+const crawlMusic1337x = async (q) => {
+    let cat = categories._1337x.music
+    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    return parseTorznabResult(result.data);
+}
+
+const jackettCrawl = async (name, cat, q) => {
+    let result
+    if (cat) {
+        result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    } else {
+        result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers");
+    }
+    return parseTorznabResult(result.data);
+}
+
 const parameterToFind = (texts, q) => {
     for (let text of texts) {
         if (text.includes(q)) {
@@ -116,4 +151,12 @@ const parameterToFind = (texts, q) => {
     }
 }
 
-module.exports = {crawlFitGirl, crawlMovies1337x, crawlTvShow1337x}
+module.exports = {
+    crawlFitGirl,
+    crawlMovies1337x,
+    crawlTvShow1337x,
+    crawlGames1337x,
+    crawlMusic1337x,
+    categories,
+    jackettCrawl
+}

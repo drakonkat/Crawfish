@@ -18,9 +18,9 @@ router.post('/edit', async (req, res, next) => {
         schema: true
         }
     */
-    req.app.locals.storage.setDownload(req.body.downloadPath);
-    req.app.locals.storage.setDownloadLimit(req.body.downloadSpeed);
-    req.app.locals.storage.setUploadLimit(req.body.uploadSpeed);
+    await req.app.locals.storage.setDownload(req.body.downloadPath);
+    await req.app.locals.storage.setDownloadLimit(req.body.downloadSpeed);
+    await req.app.locals.storage.setUploadLimit(req.body.uploadSpeed);
     res.status(200).json(true)
 });
 router.get('/', async (req, res, next) => {

@@ -1,14 +1,15 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent, writeFileSyncRecursive} = require("./utility");
+const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
+const PouchDB = require('pouchdb');
 
 
 const userDataPath = path.join(os.homedir(), "Crawfish");
 
-const TORRENTS_KEY = "torrent";
+const DOCUMENT_CONF = "configuration";
 const ADDED = "ADDED";
 const CHECK_ERROR = "CHECK_ERROR";
 const ERROR = "ERROR";
@@ -59,60 +60,107 @@ class ConfigStorage {
         }
     }
     liveData = {
-        client: new WebTorrent(this.configuration.opts)
+        client: undefined,
+        db: new PouchDB(path.join(userDataPath, "config_db"))
+
     }
 
     constructor() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT, this.configuration.path)
-        let result = this.readData(this.configuration.path)
-        if (result == null) {
-            result = this.configuration;
-            this.saveData(this.configuration.path, result)
-        } else {
-            this.configuration = result;
-        }
-
-
-        let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
-        torrents.forEach((x, index) => {
-            if (!x.paused) {
-                this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
-            }
-        });
-        this.liveData.client.on("error", (e) => {
-            this.queue.forEach(x => {
-                x.state = CHECK_ERROR
-                x.message = e.message
+        let {db} = this.liveData;
+        //Check old value from json instead of DB
+        let result;
+        db.get(DOCUMENT_CONF)
+            .then(async res => {
+                this.configuration = res;
+                result = res
             })
-            console.error("ERROR ON CLIENT: ", e)
-        })
-        this.liveData.client.on('torrent', (torrent) => {
-            let t = mapTorrent(torrent);
-            let torrents = JSON.parse(this.getVariable(TORRENTS_KEY) || "[]");
-            let founded = false;
-            torrents.forEach((x, index) => {
-                if (x.magnet == t.magnet) {
-                    founded = true;
-                    torrents[index] = t;
-                    torrents[index].paused = true;
-                    torrents[index].downloadSpeed = 0;
-                    torrents[index].uploadSpeed = 0;
+            .catch(async (error) => {
+                console.error("Error getting data at start: ", error)
+                {
+                    result = this.readData(this.configuration.path)
+                    if (result) {
+                        await this.saveData(DOCUMENT_CONF, result)
+                        fs.unlinkSync(this.configuration.path)
+                    } else {
+                        result = this.configuration;
+                    }
                 }
+                await this.saveData(DOCUMENT_CONF, result)
             })
-            if (!founded) {
-                torrents.push(t)
-            }
-            this.setVariable(TORRENTS_KEY, JSON.stringify(torrents))
-            if (!this.configuration.torrentPath) {
-                this.setVariable("torrentPath", "./torrent")
-            }
-            if (!fs.existsSync(this.configuration.torrentPath)) {
-                fs.mkdirSync(this.configuration.torrentPath, {recursive: true});
-            }
-            let path = this.configuration.torrentPath + "/" + torrent.name + ".torrent";
-            let file = fs.createWriteStream(path);
-            file.write(torrent.torrentFile);
-        })
+            .finally(async () => {
+                this.liveData.client = new WebTorrent(result.opts)
+                await this.setDownloadLimit(result.opts.downloadLimit)
+                await this.setUploadLimit(result.opts.uploadLimit)
+                // Verify old settings method
+                {
+                    let torrents = JSON.parse(result[TORRENTS_KEY] || "[]");
+                    if (torrents.length > 0) {
+                        try {
+                            await db.bulkDocs(torrents.map(t => {
+                                return {
+                                    ...t,
+                                    _id: TORRENTS_KEY + t.infoHash
+                                }
+                            }));
+                            await this.setVariable(TORRENTS_KEY, null)
+                        } catch (err) {
+                            console.error("Error inserting old style torrent", err);
+                        }
+                    }
+
+                }
+                let torrents = await this.getAllTorrent();
+                torrents.forEach((x, index) => {
+                    if (!x.paused) {
+                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
+                    }
+                });
+
+                // Handling torrent error part
+                this.liveData.client.on("error", (e) => {
+                    this.queue.forEach(x => {
+                        x.state = CHECK_ERROR
+                        x.message = e.message
+                    })
+                    console.error("ERROR ON CLIENT: ", e)
+                })
+
+                //Handling torrent fetched part
+                this.liveData.client.on('torrent', async (torrent) => {
+                    let t = mapTorrent(torrent);
+                    let foundedTorrent;
+                    try {
+                        foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+                    } catch (e) {
+                        console.warn("TORRENT NOT EXISTING BEFORE")
+                    }
+                    if (foundedTorrent) {
+                        foundedTorrent = {
+                            ...t, _rev: foundedTorrent._rev,
+                            _id: TORRENTS_KEY + t.infoHash
+                        };
+                        foundedTorrent.paused = true;
+                        foundedTorrent.downloadSpeed = 0;
+                        foundedTorrent.uploadSpeed = 0;
+                    } else {
+                        await db.put({
+                            ...t,
+                            _id: TORRENTS_KEY + t.infoHash
+                        })
+                    }
+                    if (!this.configuration.torrentPath) {
+                        this.setVariable("torrentPath", "./torrent")
+                    }
+                    if (!fs.existsSync(this.configuration.torrentPath)) {
+                        fs.mkdirSync(this.configuration.torrentPath, {recursive: true});
+                    }
+                    let path = this.configuration.torrentPath + "/" + torrent.name + ".torrent";
+                    let file = fs.createWriteStream(path);
+                    file.write(torrent.torrentFile);
+                })
+                console.log("Service started")
+            });
     }
 
     async add(magnet, torrentOpts, onTorrent) {
@@ -139,7 +187,7 @@ class ConfigStorage {
                 (torrent) => {
                     console.log("On torrent")
                     let index = this.queue.findIndex(x => x.id === id)
-                    if (index || index === 0) {
+                    if (index !== -1) {
                         console.log("On torrent", index, this.queue.length)
                         this.queue.splice(index, 1);
                     }
@@ -151,7 +199,7 @@ class ConfigStorage {
             let promise = new Promise((resolve, reject) => {
                 let wait = () => {
                     let index = this.queue.findIndex(x => x.id === id)
-                    if ((index || index === 0) && this.queue[index]) {
+                    if ((index !== -1) && this.queue[index]) {
                         if (this.queue[index].state === ADDED) {
                             if (this.liveData.client.get(magnet)) {
                                 return resolve()
@@ -177,7 +225,6 @@ class ConfigStorage {
                 wait();
             });
             let result = await promise;
-            console.log("CHECK INDEX: ", result)
         } catch (e) {
             throw e;
         }
@@ -187,27 +234,38 @@ class ConfigStorage {
         return this.configuration;
     }
 
-    setPath(path) {
-        this.configuration.path = path;
-        this.saveData(this.configuration.path, this.configuration)
-    }
-
-    setVariable(key, data) {
+    async setVariable(key, data) {
         this.configuration[key] = data;
-        this.saveData(this.configuration.path, this.configuration)
+        await this.saveData(DOCUMENT_CONF, this.configuration)
     }
 
     getVariable(key) {
         return this.configuration[key];
     }
 
-    getPath() {
-        return this.configuration.path;
+    async getAllTorrent() {
+        let {db} = this.liveData;
+        let result = []
+        try {
+            result = await db.allDocs({
+                include_docs: true,
+                startkey: TORRENTS_KEY,
+                endkey: TORRENTS_KEY + "\ufff0"
+            });
+        } catch (err) {
+            console.error(err);
+        }
+        return result.rows.map(x => {
+            return {
+                ...x.doc,
+                id: x.id
+            }
+        });
     }
 
-    setDownload(downloadPath) {
+    async setDownload(downloadPath) {
         this.configuration.downloadPath = downloadPath;
-        this.saveData(this.configuration.path, this.configuration)
+        await this.saveData(DOCUMENT_CONF, this.configuration)
     }
 
     getDownload() {
@@ -215,20 +273,20 @@ class ConfigStorage {
     }
 
 
-    setDownloadLimit(speed) {
+    async setDownloadLimit(speed) {
         this.configuration.opts.downloadLimit = speed;
         this.liveData.client.throttleDownload(speed);
-        this.saveData(this.configuration.path, this.configuration)
+        await this.saveData(DOCUMENT_CONF, this.configuration)
     }
 
     getDownloadLimit() {
         return this.configuration.opts.downloadLimit;
     }
 
-    setUploadLimit(speed) {
+    async setUploadLimit(speed) {
         this.configuration.opts.uploadLimit = speed;
         this.liveData.client.throttleUpload(speed);
-        this.saveData(this.configuration.path, this.configuration)
+        await this.saveData(DOCUMENT_CONF, this.configuration)
     }
 
     getUploadLimit() {
@@ -239,19 +297,27 @@ class ConfigStorage {
         try {
             return JSON.parse(fs.readFileSync(name));
         } catch (e) {
-            console.error("Error reading file: " + name, e)
+            console.error("Error reading file: " + name)
             return null;
         }
     }
 
-    saveData(name = this.configuration.path, data = {}) {
+    async saveData(name = DOCUMENT_CONF, data = {}) {
+        let {db} = this.liveData;
         try {
-            writeFileSyncRecursive(name, JSON.stringify(data));
-            return true;
-        } catch (e) {
-            console.error("Error saving file: " + name, data, e)
-            throw e;
+            let doc = await db.get(name)
+            db.put({
+                ...data,
+                _id: name,
+                _rev: doc._rev
+            });
+        } catch (err) {
+            db.put({
+                ...data,
+                _id: name
+            });
         }
+
     }
 }
 

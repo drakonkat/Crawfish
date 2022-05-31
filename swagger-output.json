@@ -109,6 +109,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "418": {
+            "description": "I'm a teapot"
           }
         }
       }
@@ -631,6 +634,26 @@
             }
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Restore the default category",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "If the operation gone fine, it will return the id",
+            "schema": {
+              "type": "boolean",
+              "example": true,
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
       }
     },
     "/category/{categoryId}": {
@@ -657,6 +680,9 @@
                   "example": "any"
                 },
                 "label": {
+                  "example": "any"
+                },
+                "defaultSearch": {
                   "example": "any"
                 },
                 "path": {
@@ -709,6 +735,48 @@
                 "name": "main"
               }
             }
+          }
+        }
+      }
+    },
+    "/indexer/{source}": {
+      "get": {
+        "tags": [
+          "indexer"
+        ],
+        "summary": "Based on the source will make a research on the defined indexers then remap it to a standard format (Not all the value can be populated)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/indexer/": {
+      "get": {
+        "tags": [
+          "indexer"
+        ],
+        "summary": "Return the list of the supported indexer",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
