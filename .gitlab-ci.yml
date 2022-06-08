@@ -41,10 +41,10 @@ linux-build:
   artifacts:
     expire_in: 1 week
     paths:
-      - 'packages/fether-electron/dist/*.AppImage'
-      - 'packages/fether-electron/dist/*.tar.xz'
-      - 'packages/fether-electron/dist/*.snap'
-      - 'packages/fether-electron/dist/*.deb'
+      - 'dist/*.AppImage'
+      - 'dist/*.tar.xz'
+      - 'dist/*.snap'
+      - 'dist/*.deb'
   only:
     - main
 
