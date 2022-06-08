@@ -7,7 +7,6 @@ variables:
   CARGOFLAGS: ''
 
 stages:
-  - prepare-docker
   - build
 
 
@@ -19,7 +18,7 @@ cache:
 
 express:
   image: docker:latest
-  stage: prepare-docker
+  stage: build
   services:
     - docker:dind
   script:
