@@ -17,7 +17,7 @@
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
     "bundle": "electron-builder",
-    "bundle-linux": "electron-builder -l",
+    "bundle-linux": "electron-builder -l --publish never",
     "bundleg": "electron-builder -p always"
   },
   "build": {

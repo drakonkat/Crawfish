@@ -11,10 +11,9 @@ stages:
 
 
 cache:
-  key: '${CI_JOB_NAME}'
+  key: '${CI_COMMIT_BRANCH}'
   paths:
     - node_modules/
-    - packages/*/node_modules/
 
 #express:
 #  image: docker:latest
