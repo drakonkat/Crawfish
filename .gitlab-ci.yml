@@ -73,6 +73,6 @@ win-build:
   artifacts:
     expire_in: 1 week
     paths:
-      - 'packages/fether-electron/dist/*.exe'
+      - 'dist/*.exe'
   only:
     - main
