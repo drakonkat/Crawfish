@@ -38,7 +38,7 @@ linux-build:
   script:
     - npm i node-pre-gyp
     - npm install
-    - npm run build-linux
+    - npm run bundle-linux
   artifacts:
     expire_in: 1 week
     paths:
