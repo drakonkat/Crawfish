@@ -18,6 +18,7 @@
     "prod": "node ./bin/www-prod",
     "bundle": "electron-builder",
     "bundle-linux": "electron-builder -l --publish never",
+    "bundle-win": "electron-builder --win --publish never",
     "bundleg": "electron-builder -p always"
   },
   "build": {

@@ -63,19 +63,16 @@ linux-build:
 #  only:
 #    - main
 #
-#win-build:
-#  stage: build
-#  image: electronuserland/builder:wine
-#  script:
-#    # Remove the two next lines once the Docker image gets updated to node 12
-#    # https://github.com/electron-userland/electron-builder/issues/4377
-#    - npm install -g n
-#    - n stable
-#    - npm install
-#    - electron-builder --win
-#  artifacts:
-#    expire_in: 1 week
-#    paths:
-#      - 'packages/fether-electron/dist/*.exe'
-#  only:
-#    - main
+win-build:
+  stage: build
+  image: electronuserland/builder:16-wine
+  script:
+    - npm i node-pre-gyp
+    - npm install
+    - npm run bundle-win
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - 'packages/fether-electron/dist/*.exe'
+  only:
+    - main
