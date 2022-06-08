@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('webtorrent-express-api:server');
 var http = require('http');
 var open = require('open');
 
