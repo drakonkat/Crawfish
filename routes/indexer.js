@@ -7,7 +7,20 @@ const {
     jackettCrawl,
     categories
 } = require("./classes/indexers");
-const {MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x} = require("./classes/type");
+const {
+    MOVIES,
+    GAMES,
+    TVSHOW,
+    FITGIRL,
+    GENERIC,
+    MUSIC,
+    SEARX,
+    _1337x,
+    BOOK,
+    ANIME,
+    XXX,
+    NYAASI
+} = require("./classes/type");
 const router = express.Router();
 
 const filterIndexing = (elem) => {
@@ -49,6 +62,18 @@ router.get('/:source', async (req, res, next) => {
         let q = req && req.query && req.query.q
         let results;
         switch (source) {
+            case ANIME:
+                results = (await jackettCrawl(categories.nyaasi.name, categories.nyaasi.anime, q));
+                break;
+            case BOOK:
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.book, q));
+                break;
+            case XXX:
+                results = (await jackettCrawl(categories._1337x.name, categories._1337x.xxx, q));
+                break;
+            case NYAASI:
+                results = (await jackettCrawl(categories.nyaasi.name, null, q));
+                break;
             case _1337x:
             case GENERIC:
                 results = (await jackettCrawl(categories._1337x.name, null, q));
@@ -87,7 +112,7 @@ router.get('/', (req, res, next) => {
         schema: ["MOVIES","GAMES","TVSHOW"]
     */
     try {
-        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x])
+        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x, BOOK, ANIME, XXX, NYAASI])
     } catch (e) {
         console.error(e)
     }

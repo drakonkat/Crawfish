@@ -15,20 +15,20 @@ cache:
   paths:
     - node_modules/
 
-#express:
-#  image: docker:latest
-#  stage: build
-#  services:
-#    - docker:dind
-#  script:
-#    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
-#    - docker pull mauromazzocchetti/webtorrent-express-api:latest
-#    - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION" --tag="mauromazzocchetti/webtorrent-express-api:latest" ./
-#    - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
-#    - docker push mauromazzocchetti/webtorrent-express-api:latest
-#    - docker logout
-#  only:
-#    - main
+express:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
+    - docker pull mauromazzocchetti/webtorrent-express-api:latest
+    - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION" --tag="mauromazzocchetti/webtorrent-express-api:latest" ./
+    - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
+    - docker push mauromazzocchetti/webtorrent-express-api:latest
+    - docker logout
+  only:
+    - main
 
 
 linux-build:

@@ -9,10 +9,18 @@ var http = require('http');
 var open = require('open');
 
 process.env.NODE_ENV = "development"
+
+
+process.on('uncaughtException', function (err) {
+    try {
+        console.error('*** uncaughtException:', err);
+    } catch (err) {
+
+    }
+});
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -94,3 +102,5 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
 }
+
+

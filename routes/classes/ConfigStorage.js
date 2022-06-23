@@ -140,9 +140,10 @@ class ConfigStorage {
                             ...t, _rev: foundedTorrent._rev,
                             _id: TORRENTS_KEY + t.infoHash
                         };
-                        foundedTorrent.paused = true;
+                        foundedTorrent.paused = false;
                         foundedTorrent.downloadSpeed = 0;
                         foundedTorrent.uploadSpeed = 0;
+                        db.put(foundedTorrent)
                     } else {
                         await db.put({
                             ...t,

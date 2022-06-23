@@ -71,7 +71,6 @@ router.post('/pause', async (req, res, next) => {
         }
     */
     try {
-        console.debug('Body:', req.body);
         let {db} = req.app.locals.storage.liveData
         let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
         if (temp) {
@@ -85,9 +84,13 @@ router.post('/pause', async (req, res, next) => {
                 foundedTorrent.paused = true;
                 foundedTorrent.downloadSpeed = 0;
                 foundedTorrent.uploadSpeed = 0;
+                db.put(foundedTorrent)
             } else {
                 await db.put({
                     ...t,
+                    paused: true,
+                    downloadSpeed: 0,
+                    uploadSpeed: 0,
                     _id: TORRENTS_KEY + t.infoHash
                 })
             }
