@@ -8,6 +8,9 @@ variables:
 
 stages:
   - build
+  - build-linux
+  - build-mac
+  - build-win
 
 
 cache:
@@ -32,7 +35,7 @@ express:
 
 
 linux-build:
-  stage: build
+  stage: build-linux
   image: node:16
   script:
     - npm i node-pre-gyp
@@ -46,25 +49,26 @@ linux-build:
       - 'dist/*.snap'
       - 'dist/*.deb'
   only:
-    - main
+    - feature-build
 
-#osx-build:
-#  stage: build
-#  script:
-#    - npm install
-#    - electron-builder --linux
-#  tags:
-#    - darwin-shell
-#  artifacts:
-#    expire_in: 1 week
-#    paths:
-#      - 'packages/fether-electron/dist/*.dmg'
-#      - 'packages/fether-electron/dist/*.zip'
-#  only:
-#    - main
-#
+osx-build:
+  stage: build-mac
+  script:
+    - npm i node-pre-gyp
+    - npm install
+    - npm run bundle-mac
+  tags:
+    - darwin-shell
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - 'dist/*.dmg'
+      - 'dist/*.zip'
+  only:
+    - feature-build
+
 win-build:
-  stage: build
+  stage: build-win
   image: electronuserland/builder:16-wine
   script:
     - npm i node-pre-gyp
@@ -75,4 +79,4 @@ win-build:
     paths:
       - 'dist/*.exe'
   only:
-    - main
+    - feature-build

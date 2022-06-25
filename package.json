@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-express-api",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
@@ -19,6 +19,7 @@
     "bundle": "electron-builder",
     "bundle-linux": "electron-builder -l --publish never",
     "bundle-win": "electron-builder --win --publish never",
+    "bundle-mac": "electron-builder -m --publish never",
     "bundleg": "electron-builder -p always"
   },
   "build": {
