@@ -48,21 +48,21 @@ linux-build:
   only:
     - feature-build
 
-osx-build:
-  stage: build
-  script:
-    - npm i node-pre-gyp
-    - npm install
-    - npm run bundle-mac
-  tags:
-    - darwin-shell
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - 'dist/*.dmg'
-      - 'dist/*.zip'
-  only:
-    - feature-build
+#osx-build:
+#  stage: build
+#  script:
+#    - npm i node-pre-gyp
+#    - npm install
+#    - npm run bundle-mac
+#  tags:
+#    - darwin-shell
+#  artifacts:
+#    expire_in: 1 week
+#    paths:
+#      - 'dist/*.dmg'
+#      - 'dist/*.zip'
+#  only:
+#    - feature-build
 
 win-build:
   stage: build
