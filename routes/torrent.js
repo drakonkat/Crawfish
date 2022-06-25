@@ -243,6 +243,13 @@ router.post('/destroy', async (req, res, next) => {
             console.log(err);
         }
         torrent.destroy({destroyStore: true});
+    } else {
+        try {
+            let doc = await db.get(TORRENTS_KEY + torrent.infoHash);
+            await db.remove(doc);
+        } catch (err) {
+            console.log(err);
+        }
     }
     res.status(200).json(req.body);
 });
@@ -266,9 +273,10 @@ router.post('/remove', async (req, res, next) => {
             }]
         }
     */
-    console.debug('Body:', req.body);
+    let {magnet} = req.body
+
     let {db} = req.app.locals.storage.liveData
-    let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
+    let torrent = req.app.locals.storage.liveData.client.get(magnet);
     if (torrent) {
         try {
             let doc = await db.get(TORRENTS_KEY + torrent.infoHash);
@@ -277,6 +285,15 @@ router.post('/remove', async (req, res, next) => {
             console.log(err);
         }
         torrent.destroy();
+    } else {
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
+        torrent = oldTorrent.find(x => x.magnet == magnet)
+        try {
+            let doc = await db.get(TORRENTS_KEY + torrent.infoHash);
+            await db.remove(doc);
+        } catch (err) {
+            console.log(err);
+        }
     }
     res.status(200).json(req.body);
 });
