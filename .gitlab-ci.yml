@@ -47,6 +47,7 @@ linux-build:
       - 'dist/*.deb'
   only:
     - main
+    - feature-linuxbuild
 
 #osx-build:
 #  stage: build

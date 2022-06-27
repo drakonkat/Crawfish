@@ -14,6 +14,10 @@ process.env.NODE_ENV = "development"
 process.on('uncaughtException', function (err) {
     try {
         console.error('*** uncaughtException:', err);
+        if (process.send) {
+            // Say my process is ready
+            process.send("ERROR: "+err.message);
+        }
     } catch (err) {
 
     }

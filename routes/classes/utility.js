@@ -41,7 +41,7 @@ const simpleHash = (id, filename) => {
 };
 
 
-function writeFileSyncRecursive(filename, content, charset) {
+function writeFileSyncRecursive(filename, content = "", charset) {
     // -- normalize path separator to '/' instead of path.sep,
     // -- as / works in node for Windows as well, and mixed \\ and / can appear in the path
     let filepath = filename.replace(/\\/g, '/');
