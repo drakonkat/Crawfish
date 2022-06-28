@@ -1,5 +1,4 @@
 variables:
-  GH_TOKEN: $GH_TOKEN
   IMAGE_VERSION: "1.3.6"
   GIT_DEPTH: '3'
   SIMPLECOV: 'true'
@@ -36,6 +35,7 @@ linux-build:
   stage: build
   image: node:16
   script:
+    - echo "$GH_TOKEN"
     - npm i node-pre-gyp
     - npm install
     - npm run bundle-linux
