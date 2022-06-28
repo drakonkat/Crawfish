@@ -4,7 +4,7 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
-const {autoUpdater} = require("electron-updater")
+const { autoUpdater } = require("electron-updater")
 
 let mainWindow;
 const createWindow = () => {
@@ -18,29 +18,56 @@ const createWindow = () => {
     });
     mainWindow.setMenuBarVisibility(false)
     /**
-     * Controllo di versione
+     * Controllo di versione TODO Better handling 
      */
+    let subprocess;
     if (isDev) {
-        cp.fork(
+        subprocess = cp.fork(
             "bin/www"
         );
-        mainWindow.loadURL(
-            "http://localhost:3000/build/index.html"
-        );
-        mainWindow.webContents.openDevTools();
+        subprocess.on('message', message => {
+            switch (message) {
+                case "READY":
+                    mainWindow.loadURL(
+                        "http://localhost:3000/build/index.html"
+                    );
+                    mainWindow.webContents.openDevTools();
+                    mainWindow.on("closed", () => {
+                        subprocess.kill('SIGHUP');
+                        return (mainWindow = null)
+                    });
+                    break;
+                default:
+                    console.error("Error in server process " + message)
+
+            }
+
+        });
     } else {
-        cp.fork(
+        subprocess = cp.fork(
             `${path.join(__dirname, "../bin/www")}`
         );
-        mainWindow.loadURL(
-            "http://localhost:3000/build/index.html"
-        );
+        subprocess.on('message', message => {
+            console.log("Message received: ", message)
+            switch (message) {
+                case "READY":
+                    mainWindow.loadURL(
+                        "http://localhost:3000/build/index.html"
+                    );
+                    mainWindow.on("closed", () => {
+                        subprocess.kill('SIGHUP');
+                        return (mainWindow = null)
+                    });
+                    break;
+                default:
+                    console.error("Error in server process " + message)
+
+            }
+        });
     }
 
-    mainWindow.on("closed", () => (
-        mainWindow = null
-    ))
-    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
+
+    // autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
 }
 
 app.on("ready", createWindow)

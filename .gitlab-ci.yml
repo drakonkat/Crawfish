@@ -46,24 +46,24 @@ linux-build:
       - 'dist/*.snap'
       - 'dist/*.deb'
   only:
-    - feature-build
+    - main
+    - feature-linuxbuild
 
 #osx-build:
 #  stage: build
 #  script:
-#    - npm i node-pre-gyp
 #    - npm install
-#    - npm run bundle-mac
+#    - electron-builder --linux
 #  tags:
 #    - darwin-shell
 #  artifacts:
 #    expire_in: 1 week
 #    paths:
-#      - 'dist/*.dmg'
-#      - 'dist/*.zip'
+#      - 'packages/fether-electron/dist/*.dmg'
+#      - 'packages/fether-electron/dist/*.zip'
 #  only:
-#    - feature-build
-
+#    - main
+#
 win-build:
   stage: build
   image: electronuserland/builder:16-wine
@@ -76,4 +76,4 @@ win-build:
     paths:
       - 'dist/*.exe'
   only:
-    - feature-build
+    - main
