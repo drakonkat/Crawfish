@@ -35,7 +35,7 @@ linux-build:
   stage: build
   image: node:16
   script:
-    - echo "$GH_TOKEN"
+    - echo $GH_TOKEN
     - npm i node-pre-gyp
     - npm install
     - npm run bundle-linux
