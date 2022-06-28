@@ -18,7 +18,7 @@
     "prod": "node ./bin/www-prod",
     "bundle": "electron-builder",
     "bundle-linux": "electron-builder -l -p always",
-    "bundle-win": "electron-builder --win -p always",
+    "bundle-win": "electron-builder -w -p always",
     "bundleg": "electron-builder -p always"
   },
   "build": {

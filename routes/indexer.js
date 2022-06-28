@@ -19,7 +19,7 @@ const {
     BOOK,
     ANIME,
     XXX,
-    NYAASI
+    NYAASI, RARBG
 } = require("./classes/type");
 const router = express.Router();
 
@@ -62,6 +62,9 @@ router.get('/:source', async (req, res, next) => {
         let q = req && req.query && req.query.q
         let results;
         switch (source) {
+            case RARBG:
+                results = (await jackettCrawl(categories.rarbg.name, null, q));
+                break;
             case ANIME:
                 results = (await jackettCrawl(categories.nyaasi.name, categories.nyaasi.anime, q));
                 break;
@@ -112,7 +115,7 @@ router.get('/', (req, res, next) => {
         schema: ["MOVIES","GAMES","TVSHOW"]
     */
     try {
-        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x, BOOK, ANIME, XXX, NYAASI])
+        res.status(200).json([MOVIES, GAMES, TVSHOW, FITGIRL, GENERIC, MUSIC, SEARX, _1337x, BOOK, ANIME, XXX, NYAASI, RARBG])
     } catch (e) {
         console.error(e)
     }

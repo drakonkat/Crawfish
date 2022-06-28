@@ -1,6 +1,6 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
-const { mapTorrent, writeFileSyncRecursive, TORRENTS_KEY } = require("./utility");
+const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
@@ -15,29 +15,29 @@ const CHECK_ERROR = "CHECK_ERROR";
 const ERROR = "ERROR";
 const trackers = ['wss://tracker.btorrent.xyz', 'wss://tracker.openwebtorrent.com', 'wss://tracker.quix.cf', 'wss://tracker.crawfish.cf']
 const rtcConfig =
-{
-    "iceServers": [
-        {
-            "urls": "stun:23.21.150.121"
-        },
-        {
-            urls: [
-                'stun:stun.l.google.com:19302',
-                'stun:global.stun.twilio.com:3478'
-            ]
-        },
-        {
-            "username": "admin",
-            "credential": "Password1!",
-            "urls": "turn:185.149.22.163:3478"
-        },
-        {
-            "username": "admin",
-            "credential": "Password1!",
-            "urls": "turn:23.94.202.235:3478"
-        }
-    ]
-}
+    {
+        "iceServers": [
+            {
+                "urls": "stun:23.21.150.121"
+            },
+            {
+                urls: [
+                    'stun:stun.l.google.com:19302',
+                    'stun:global.stun.twilio.com:3478'
+                ]
+            },
+            {
+                "username": "admin",
+                "credential": "Password1!",
+                "urls": "turn:185.149.22.163:3478"
+            },
+            {
+                "username": "admin",
+                "credential": "Password1!",
+                "urls": "turn:23.94.202.235:3478"
+            }
+        ]
+    }
 
 class ConfigStorage {
     queue = []
@@ -67,9 +67,11 @@ class ConfigStorage {
 
     constructor() {
         console.log("Starting the service...", WebTorrent.WEBRTC_SUPPORT, WebTorrent.UTP_SUPPORT)
-        let { db } = this.liveData;
+        let {db} = this.liveData;
         //Check old value from json instead of DB
-        writeFileSyncRecursive(path.join(userDataPath, "config_db", "LOCK") + "")
+        if (!fs.existsSync(path.join(userDataPath, "config_db", "LOCK") + "")) {
+            writeFileSyncRecursive(path.join(userDataPath, "config_db", "LOCK") + "")
+        }
         let result;
         db.get(DOCUMENT_CONF)
             .then(async res => {
@@ -114,7 +116,7 @@ class ConfigStorage {
                 let torrents = await this.getAllTorrent();
                 torrents.forEach((x, index) => {
                     if (!x.paused) {
-                        this.liveData.client.add(x.magnet, { path: x.path || this.getDownload() });
+                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
                     }
                 });
 
@@ -155,7 +157,7 @@ class ConfigStorage {
                         this.setVariable("torrentPath", "./torrent")
                     }
                     if (!fs.existsSync(this.configuration.torrentPath)) {
-                        fs.mkdirSync(this.configuration.torrentPath, { recursive: true });
+                        fs.mkdirSync(this.configuration.torrentPath, {recursive: true});
                     }
                     let path = this.configuration.torrentPath + "/" + torrent.name + ".torrent";
                     let file = fs.createWriteStream(path);
@@ -187,9 +189,9 @@ class ConfigStorage {
             this.queue.push(element);
 
             this.liveData.client.add(magnet, {
-                ...torrentOpts,
-                announce: trackers
-            },
+                    ...torrentOpts,
+                    announce: trackers
+                },
                 (torrent) => {
                     console.log("On torrent")
                     let index = this.queue.findIndex(x => x.id === id)
@@ -250,7 +252,7 @@ class ConfigStorage {
     }
 
     async getAllTorrent() {
-        let { db } = this.liveData;
+        let {db} = this.liveData;
         let result = []
         try {
             result = await db.allDocs({
@@ -309,7 +311,7 @@ class ConfigStorage {
     }
 
     async saveData(name = DOCUMENT_CONF, data = {}) {
-        let { db } = this.liveData;
+        let {db} = this.liveData;
         try {
             let doc = await db.get(name)
             db.put({

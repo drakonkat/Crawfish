@@ -17,6 +17,9 @@ const categories = {
     nyaasi: {
         name: "nyaasi",
         anime: "5000,5070,125996,134634,140679"
+    },
+    rarbg: {
+        name: "rarbg"
     }
 }
 
