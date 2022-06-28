@@ -18,7 +18,7 @@ const createWindow = () => {
     });
     mainWindow.setMenuBarVisibility(false)
     /**
-     * Controllo di versione TODO Better handling 
+     * Controllo di versione TODO Better handling
      */
     let subprocess;
     if (isDev) {
@@ -67,7 +67,7 @@ const createWindow = () => {
     }
 
 
-    // autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
+    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
 }
 
 app.on("ready", createWindow)

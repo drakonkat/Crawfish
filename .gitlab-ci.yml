@@ -1,4 +1,5 @@
 variables:
+  GH_TOKEN: "${GH_TOKEN}"
   IMAGE_VERSION: "1.3.6"
   GIT_DEPTH: '3'
   SIMPLECOV: 'true'
@@ -47,7 +48,7 @@ linux-build:
       - 'dist/*.deb'
   only:
     - main
-    - feature-linuxbuild
+    - feature-build
 
 #osx-build:
 #  stage: build
@@ -77,3 +78,4 @@ win-build:
       - 'dist/*.exe'
   only:
     - main
+    - feature-build

@@ -17,8 +17,8 @@
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
     "bundle": "electron-builder",
-    "bundle-linux": "electron-builder -l --publish never",
-    "bundle-win": "electron-builder --win --publish never",
+    "bundle-linux": "electron-builder -l -p always",
+    "bundle-win": "electron-builder --win -p always",
     "bundleg": "electron-builder -p always"
   },
   "build": {
@@ -31,8 +31,11 @@
       ],
       "requestedExecutionLevel": "requireAdministrator"
     },
-    "linux":{
-        "target":"AppImage"
+    "linux": {
+      "target": "AppImage",
+      "publish": [
+        "github"
+      ]
     },
     "nsis": {
       "oneClick": false,
