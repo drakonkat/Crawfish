@@ -5,9 +5,10 @@ const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
 const PouchDB = require('pouchdb');
+const wrtc = require('wrtc')
 
 
-const userDataPath = path.join(os.homedir(), "Crawfish");
+userDataPath = path.join(os.homedir(), "Crawfish");
 
 const DOCUMENT_CONF = "configuration";
 const ADDED = "ADDED";
@@ -92,7 +93,11 @@ class ConfigStorage {
                 await this.saveData(DOCUMENT_CONF, result)
             })
             .finally(async () => {
-                this.liveData.client = new WebTorrent(result.opts)
+                this.liveData.client = new WebTorrent({
+                    ...result.opts,
+                    tracker: {...result.opts.tracker, wrtc: wrtc}
+                })
+
                 await this.setDownloadLimit(result.opts.downloadLimit)
                 await this.setUploadLimit(result.opts.uploadLimit)
                 // Verify old settings method
