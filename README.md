@@ -3,7 +3,7 @@
 **Crawfish** is an innovative and free torrent client where anyone can stream/download torrents and share it with a
 simple link.
 
-Available feature is:
+Available features are:
 
 - Basic torrent feature (Download/Seed)
 - Torrent seeded by this client can be streamed or downloaded from webtorrent browser client like QPlayer.
@@ -25,20 +25,22 @@ Download the latest release here. [Download CrawFish](https://github.com/drakonk
 
 ### How to use CrawFish
 
-**CrawFish** is easy to use!![Home](asset/Home.png)
+**CrawFish** is easy to use!
 
-After you installed the client you are ready to Search and Download/Seed lot of content! But also there are some other
-feature you can use in CrawFish
+![Home](asset/Home.png)
+
+After you installed the client you are ready to Search and Download/Seed lot of contents! But also there are some other
+features you can use in CrawFish
 
 **Streaming**
 
 ![Reproduce icon](asset/Reproduce.png)
 
 When downloading a Movie or a TV Series, by clicking this icon, you will be able to watch it immediately in streaming!
-It will be opened by your SO deafult video software (be careful that it can read all the video format).
+It will be opened by your OS default video software (be careful that it can read all the video format).
 Of course there is the limitation that you can't skip minutes of video if it is not already downloaded.
 
-Here a little video that show how it work
+Here a little video that show how it works
 
 ![Streaming video](asset/ReproduceStreaming.mp4)
 
@@ -56,7 +58,7 @@ Yes, you can share what are you downloading with your friend, parents, enemies o
 that icon, in your clipboard will be copied
 a link to send to your friend.
 
-Then they just need to click the link and then they will start to download your same torrent via browser!*
+Then they just need to click the link, and then they will start to download your same torrent via browser!*
 
 \* The speed in accessing and downloading the file is proportional to how much seed the torrent has.
 
@@ -64,17 +66,17 @@ Then they just need to click the link and then they will start to download your 
 
 ![Magnet icon](asset/Magnet.png)
 
-By clicking this icon in your clipboard will be saved the magnet link of the current torrent.
+By clicking this icon in your clipboard, will be saved the magnet link of the current torrent.
 
 ### Exploring Settings
 
-In the settings you will be able to perfomr different useful action!
+In the settings you will be able to perform different useful action!
 
 **General Tab**
 
 ![General](asset/General.png)
 
-In this section you will be able set the path of the generic downloaded torrents
+In this section you will be able to set the path of the generic downloaded torrents
 
 And also you will be able to set the speed of the Download and the Upload.
 
@@ -88,14 +90,14 @@ just to follow some steps:
 In the Settings there is the tab **Category** where you can add a label in the **Explore** menu in the main page as a
 fast research section.
 
-When you are in **Categroy** section, clic **Add** and will appear a Generic Category, then expand it by clicking on it.
+When you are in **Category** section, clic **Add** and will appear a Generic Category, then expand it by clicking on it.
 
 Edit the fields by pressing the pencil icon or delete the created category by clicking the trashcan icon.
 
 In the fields of the **Category** you have these possibilities:
 
-- Choose a specific path where to dowload the torrents![Category path pic](asset/CategoryPath.png)
-- The name of the label that will appear in the Explore main menu![Category label pic](asset/CategoryLabel.png)
+- Choose a specific path where to download the torrents![Category path pic](asset/CategoryPath.png)
+- The name of the label that will appear in the **Explore** main menu![Category label pic](asset/CategoryLabel.png)
 - You can include some tag for a faster research (ex. by writing "Eng" it will search for all the torrents that include
   the Eng language on the name)![Category tag pic](asset/CategoryTag.png)
 - Have the possibility to put a default research for that
@@ -119,7 +121,7 @@ Also you are able to activate/disable the dark theme
 **Yes!** Simply use the software, open issue if there is improvement/bug fixing that can be done and say thanks! It is
 enough
 
-Issue can be send here. [Issue board](https://github.com/drakonkat/webtorrent-express-api/issues)
+Issue can be sent here. [Issue board](https://github.com/drakonkat/webtorrent-express-api/issues)
 
 ## License
 
