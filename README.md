@@ -70,7 +70,7 @@ By clicking this icon, in your clipboard will be saved the magnet link of the cu
 
 ### Exploring Settings
 
-In the settings you will be able to perform different useful action!
+In the settings you will be able to perform different useful actions!
 
 **General Tab**
 
