@@ -11,7 +11,7 @@ const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
-        title: "CrawFish",
+        title: "CrawFish - 1.7.2",
         webPreferences: {
             nodeIntegration: true
         }
@@ -33,7 +33,11 @@ const createWindow = () => {
                     );
                     mainWindow.webContents.openDevTools();
                     mainWindow.on("closed", () => {
-                        subprocess.kill('SIGHUP');
+                        try {
+                            subprocess.kill('SIGHUP');
+                        } catch (e) {
+                            console.log("Exception closing process, probably already closed by Operating system")
+                        }
                         return (mainWindow = null)
                     });
                     break;
@@ -55,7 +59,11 @@ const createWindow = () => {
                         "http://localhost:3000/build/index.html"
                     );
                     mainWindow.on("closed", () => {
-                        subprocess.kill('SIGHUP');
+                        try {
+                            subprocess.kill('SIGHUP');
+                        } catch (e) {
+                            console.log("Exception closing process, probably already closed by Operating system")
+                        }
                         return (mainWindow = null)
                     });
                     break;
