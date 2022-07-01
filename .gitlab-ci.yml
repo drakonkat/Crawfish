@@ -35,7 +35,7 @@ linux-build:
   stage: build
   image: node:16
   script:
-    - npm i node-pre-gyp
+    - npm i @mapbox/node-pre-gyp -g
     - npm install
     - npm run bundle-linux
   artifacts:
@@ -45,9 +45,7 @@ linux-build:
       - 'dist/*.tar.xz'
       - 'dist/*.snap'
       - 'dist/*.deb'
-  only:
-    - main
-    - feature-build
+  when: manual
 
 #osx-build:
 #  stage: build
@@ -68,13 +66,11 @@ win-build:
   stage: build
   image: electronuserland/builder:16-wine
   script:
-    - npm i node-pre-gyp
+    - npm i @mapbox/node-pre-gyp -g
     - npm install
     - npm run bundle-win
   artifacts:
     expire_in: 1 week
     paths:
       - 'dist/*.exe'
-  only:
-    - main
-    - feature-build
+  when: manual
