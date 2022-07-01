@@ -82,7 +82,7 @@ And also you will be able to set the speed of the Download and the Upload.
 
 ![Category](asset/Category.png)
 
-You want to add or remove a category from the **Explore** menu in base of your need? Wit CrawFish is possible! You have
+You want to add or remove a category from the **Explore** menu in base of your need? With CrawFish is possible! You have
 just to follow some steps:
 
 In the Settings there is the tab **Category** where you can add a label in the **Explore** menu in the main page as a
