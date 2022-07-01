@@ -66,7 +66,7 @@ Then they just need to click the link, and then they will start to download your
 
 ![Magnet icon](asset/Magnet.png)
 
-By clicking this icon in your clipboard, will be saved the magnet link of the current torrent.
+By clicking this icon, in your clipboard will be saved the magnet link of the current torrent.
 
 ### Exploring Settings
 
