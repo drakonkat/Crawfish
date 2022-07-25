@@ -171,7 +171,7 @@ class ConfigStorage {
                 console.log("Service started")
                 if (process.send) {
                     // Say my process is ready
-                    process.send("READY");
+                    process.send({message: "READY", data: null});
                 }
             });
     }

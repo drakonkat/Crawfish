@@ -4,17 +4,16 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
-const { autoUpdater } = require("electron-updater")
+const {autoUpdater} = require("electron-updater")
 
 let mainWindow;
 const createWindow = () => {
+    let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
         title: "CrawFish - 1.7.2",
-        webPreferences: {
-            nodeIntegration: true
-        }
+        webPreferences: {}
     });
     mainWindow.setMenuBarVisibility(false)
     /**
@@ -25,25 +24,33 @@ const createWindow = () => {
         subprocess = cp.fork(
             "bin/www"
         );
-        subprocess.on('message', message => {
-            switch (message) {
-                case "READY":
-                    mainWindow.loadURL(
-                        "http://localhost:3000/build/index.html"
-                    );
-                    mainWindow.webContents.openDevTools();
-                    mainWindow.on("closed", () => {
-                        try {
-                            subprocess.kill('SIGHUP');
-                        } catch (e) {
-                            console.log("Exception closing process, probably already closed by Operating system")
+        subprocess.on('message', result => {
+            if (result) {
+                let {message} = result
+                switch (message) {
+                    case "READY":
+                        mainWindow.loadURL(
+                            "http://localhost:" + port + "/build/index.html"
+                        );
+                        mainWindow.webContents.openDevTools();
+                        mainWindow.on("closed", () => {
+                            try {
+                                subprocess.kill('SIGHUP');
+                            } catch (e) {
+                                console.log("Exception closing process, probably already closed by Operating system")
+                            }
+                            return (mainWindow = null)
+                        });
+                        break;
+                    case "PORT":
+                        if (result.data) {
+                            port = result.data;
                         }
-                        return (mainWindow = null)
-                    });
-                    break;
-                default:
-                    console.error("Error in server process " + message)
+                        break;
+                    default:
+                        console.error("Error in server process " + message)
 
+                }
             }
 
         });
@@ -51,25 +58,32 @@ const createWindow = () => {
         subprocess = cp.fork(
             `${path.join(__dirname, "../bin/www")}`
         );
-        subprocess.on('message', message => {
-            console.log("Message received: ", message)
-            switch (message) {
-                case "READY":
-                    mainWindow.loadURL(
-                        "http://localhost:3000/build/index.html"
-                    );
-                    mainWindow.on("closed", () => {
-                        try {
-                            subprocess.kill('SIGHUP');
-                        } catch (e) {
-                            console.log("Exception closing process, probably already closed by Operating system")
+        subprocess.on('message', result => {
+            if (result) {
+                let {message} = result
+                switch (message) {
+                    case "READY":
+                        mainWindow.loadURL(
+                            "http://localhost:" + port + "/build/index.html"
+                        );
+                        mainWindow.on("closed", () => {
+                            try {
+                                subprocess.kill('SIGHUP');
+                            } catch (e) {
+                                console.log("Exception closing process, probably already closed by Operating system")
+                            }
+                            return (mainWindow = null)
+                        });
+                        break;
+                    case "PORT":
+                        if (result.data) {
+                            port = result.data;
                         }
-                        return (mainWindow = null)
-                    });
-                    break;
-                default:
-                    console.error("Error in server process " + message)
+                        break;
+                    default:
+                        console.error("Error in server process " + message)
 
+                }
             }
         });
     }
