@@ -1,7 +1,6 @@
 var app = require('./app');
 var http = require('http');
 var open = require('open');
-var fs = require("fs");
 
 function start(port = 3000) {
 
@@ -23,7 +22,6 @@ function start(port = 3000) {
      * Get port from environment and store in Express.
      */
     port = normalizePort(port || process.env.PORT || '3000');
-    fs.writeFileSync('./public/build/config.json', JSON.stringify({port: port}));
     if (process.send) {
         // Say my process is ready
         process.send({message: "PORT", data: port});
@@ -75,7 +73,7 @@ function start(port = 3000) {
      */
 
     function onError(error) {
-        console.error("IMSAKDJNSALD", error.code)
+        console.error("Error in main process", error.code)
         if (error.syscall !== 'listen') {
             throw error;
         }
@@ -91,7 +89,7 @@ function start(port = 3000) {
                 process.exit(1);
                 break;
             case 'EADDRINUSE':
-                console.error(bind + ' is already in use');
+                console.error(bind + ' is already in use. Change to: ' + (port + 1));
                 if (port < 65535) {
                     start(port + 1)
                 }

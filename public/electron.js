@@ -12,7 +12,7 @@ const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
-        title: "CrawFish - 1.7.2",
+        title: "CrawFish - 1.7.3",
         webPreferences: {}
     });
     mainWindow.setMenuBarVisibility(false)
@@ -30,7 +30,7 @@ const createWindow = () => {
                 switch (message) {
                     case "READY":
                         mainWindow.loadURL(
-                            "http://localhost:" + port + "/build/index.html"
+                            "http://localhost:" + port + "/build/index.html?port=" + port
                         );
                         mainWindow.webContents.openDevTools();
                         mainWindow.on("closed", () => {
@@ -64,7 +64,7 @@ const createWindow = () => {
                 switch (message) {
                     case "READY":
                         mainWindow.loadURL(
-                            "http://localhost:" + port + "/build/index.html"
+                            "http://localhost:" + port + "/build/index.html?port=" + port
                         );
                         mainWindow.on("closed", () => {
                             try {
