@@ -2,6 +2,7 @@ const open = require('open');
 const express = require('express');
 const {getExtension, mapTorrent, simpleHash, supportedFormats} = require("./classes/utility");
 const {crawlFitGirl, crawlMovies1337x, crawlTvShow1337x} = require("./classes/indexers");
+const path = require("path");
 
 
 const router = express.Router();
@@ -68,6 +69,30 @@ router.get('/open', async (req, res, next) => {
                 })
             }
         })
+        res.status(200).json(opened)
+    } catch (e) {
+        console.error(e)
+    }
+});
+router.get('/openFolder', async (req, res, next) => {
+    /*
+        #swagger.tags = ['files']
+        #swagger.summary = "Open the folder where the file is"
+        #swagger.responses[200] = {
+        description: "Open the folder where the file is in the localsystem"
+    */
+    try {
+        let opened = false;
+        let torrents = req.app.locals.storage.liveData.client.torrents.map(mapTorrent);
+        let oldTorrent = await req.app.locals.storage.getAllTorrent();
+        torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
+        for (const t of torrents) {
+            if (!opened && t && t.files && t.infoHash === req.query.torrentId) {
+                let f = t.files[0]
+                await open(path.dirname(f.path), {wait: true});
+                opened = true;
+            }
+        }
         res.status(200).json(opened)
     } catch (e) {
         console.error(e)

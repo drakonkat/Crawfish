@@ -8,12 +8,16 @@ const {autoUpdater} = require("electron-updater")
 
 let mainWindow;
 const createWindow = () => {
+    let title = "CrawFish - 1.7.3"
     let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
-        title: "CrawFish - 1.7.3",
+        title: title,
         webPreferences: {}
+    });
+    mainWindow.on('page-title-updated', (evt) => {
+        evt.preventDefault();
     });
     mainWindow.setMenuBarVisibility(false)
     /**

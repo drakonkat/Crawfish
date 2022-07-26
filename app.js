@@ -72,6 +72,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', indexRouter);
 app.use('/config', configRouter);
 app.use('/torrent', torrentRouter);
+app.use('//torrent', torrentRouter);
 app.use('/stream', streamRouter);
 app.use('/category', categoryRouter);
 app.use('/indexer', indexerRouter);
