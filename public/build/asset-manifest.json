@@ -5,18 +5,18 @@
     "main.js.map": "./static/js/main.317f2aa5.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.de77a114.js",
     "runtime-main.js.map": "./static/js/runtime-main.de77a114.js.map",
-    "static/js/2.7033f249.chunk.js": "./static/js/2.7033f249.chunk.js",
-    "static/js/2.7033f249.chunk.js.map": "./static/js/2.7033f249.chunk.js.map",
+    "static/js/2.ef917554.chunk.js": "./static/js/2.ef917554.chunk.js",
+    "static/js/2.ef917554.chunk.js.map": "./static/js/2.ef917554.chunk.js.map",
     "static/js/3.865fc1bd.chunk.js": "./static/js/3.865fc1bd.chunk.js",
     "static/js/3.865fc1bd.chunk.js.map": "./static/js/3.865fc1bd.chunk.js.map",
     "index.html": "./index.html",
     "static/css/main.4d17b0cb.chunk.css.map": "./static/css/main.4d17b0cb.chunk.css.map",
-    "static/js/2.7033f249.chunk.js.LICENSE.txt": "./static/js/2.7033f249.chunk.js.LICENSE.txt",
+    "static/js/2.ef917554.chunk.js.LICENSE.txt": "./static/js/2.ef917554.chunk.js.LICENSE.txt",
     "static/media/default-nomargin.6aa2a7cf.svg": "./static/media/default-nomargin.6aa2a7cf.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.de77a114.js",
-    "static/js/2.7033f249.chunk.js",
+    "static/js/2.ef917554.chunk.js",
     "static/css/main.4d17b0cb.chunk.css",
     "static/js/main.317f2aa5.chunk.js"
   ]

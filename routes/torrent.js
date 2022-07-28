@@ -1,6 +1,5 @@
 const path = require('path')
 const express = require('express')
-const parseTorrent = require('parse-torrent')
 const {mapTorrent, simpleHash, TORRENTS_KEY} = require("./classes/utility")
 const axios = require("axios");
 
@@ -28,7 +27,6 @@ router.post('/add', async (req, res, next) => {
     */
     try {
         let {magnet, path} = req.body;
-        console.log("CHECK MAGNET: ", parseTorrent(magnet))
         if (magnet && magnet.includes && magnet.includes("magnet:?")) {
             magnet = magnet + "&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.quix.cf"
         } else if (magnet && magnet.startsWith && magnet.startsWith("http")) {
@@ -77,7 +75,12 @@ router.post('/pause', async (req, res, next) => {
         let temp = req.app.locals.storage.liveData.client.get(req.body.magnet);
         if (temp) {
             let t = mapTorrent(temp);
-            let foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+            let foundedTorrent;
+            try {
+                foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+            } catch (e) {
+                console.warn("TORRENT NOT EXISTING BEFORE")
+            }
             if (foundedTorrent) {
                 foundedTorrent = {
                     ...t, _rev: foundedTorrent._rev,

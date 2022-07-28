@@ -6,7 +6,7 @@ const os = require('os')
 const path = require("path");
 const PouchDB = require('pouchdb');
 const wrtc = require('wrtc')
-
+const schedule = require('node-schedule');
 
 userDataPath = path.join(os.homedir(), "Crawfish");
 
@@ -43,6 +43,14 @@ const rtcConfig =
 class ConfigStorage {
     queue = []
     configuration = {
+        speed: {
+            alternativeTimeStart: null,
+            alternativeTimeEnd: null,
+            alternativeDownload: null,
+            alternativeUpload: null,
+            download: null,
+            upload: null,
+        },
         torrentPath: "./torrent",
         path: path.join(userDataPath, "config.json"),
         downloadPath: downloadsFolder() || "./Downloads/",
@@ -97,9 +105,13 @@ class ConfigStorage {
                     ...result.opts,
                     tracker: {...result.opts.tracker, wrtc: wrtc}
                 })
-
-                await this.setDownloadLimit(result.opts.downloadLimit)
-                await this.setUploadLimit(result.opts.uploadLimit)
+                await this.setSpeedConf({
+                    ...result.speed,
+                    download: result.speed.download || result.opts.downloadLimit,
+                    upload: result.speed.upload || result.opts.uploadLimit,
+                    alternativeTimeStart: result.speed.alternativeTimeStart ? new Date(Date.parse(result.speed.alternativeTimeStart)) : null,
+                    alternativeTimeEnd: result.speed.alternativeTimeEnd ? new Date(Date.parse(result.speed.alternativeTimeEnd)) : null,
+                })
                 // Verify old settings method
                 {
                     let torrents = JSON.parse(result[TORRENTS_KEY] || "[]");
@@ -136,6 +148,7 @@ class ConfigStorage {
 
                 //Handling torrent fetched part
                 this.liveData.client.on('torrent', async (torrent) => {
+                    console.log("Getting torrent: ", torrent.infoHash)
                     let t = mapTorrent(torrent);
                     let foundedTorrent;
                     try {
@@ -304,6 +317,59 @@ class ConfigStorage {
 
     getUploadLimit() {
         return this.configuration.opts.uploadLimit;
+    }
+
+    async setSpeedConf(speed = {
+                           alternativeTimeStart: null,
+                           alternativeTimeEnd: null,
+                           alternativeDownload: null,
+                           alternativeUpload: null,
+                           download: 1250000,
+                           upload: 1250000,
+                       }
+    ) {
+        let actualTime = new Date();
+        let {
+            alternativeTimeStart,
+            alternativeTimeEnd,
+            alternativeDownload,
+            alternativeUpload,
+            download,
+            upload
+        } = speed
+
+        this.configuration.speed = speed;
+        await this.saveData(DOCUMENT_CONF, this.configuration)
+        if (alternativeTimeStart && alternativeTimeEnd) {
+            if (this.getTimeInSecondFromDate(actualTime) <= this.getTimeInSecondFromDate(alternativeTimeEnd) && this.getTimeInSecondFromDate(actualTime) >= this.getTimeInSecondFromDate(alternativeTimeStart)) {
+                await this.setUploadLimit(alternativeUpload)
+                await this.setDownloadLimit(alternativeDownload)
+            } else {
+                await this.setUploadLimit(upload)
+                await this.setDownloadLimit(download)
+            }
+            {
+                await schedule.gracefulShutdown();
+                schedule.scheduleJob("0 " + alternativeTimeStart.getMinutes() + " " + alternativeTimeStart.getHours() + " * * *", async () => {
+                    await this.setUploadLimit(alternativeUpload)
+                    await this.setDownloadLimit(alternativeDownload)
+                });
+                schedule.scheduleJob("0 " + alternativeTimeEnd.getMinutes() + " " + alternativeTimeEnd.getHours() + " * * *", async () => {
+                    await this.setUploadLimit(upload)
+                    await this.setDownloadLimit(download)
+                });
+            }
+        } else {
+            await this.setUploadLimit(upload)
+            await this.setDownloadLimit(download)
+        }
+    }
+
+    getTimeInSecondFromDate(date = new Date()) {
+        if (!date.getHours) {
+            date = new Date(Date.parse(date))
+        }
+        return (date.getHours() * 3600) + (date.getMinutes() * 60) + date.getSeconds();
     }
 
     readData(name = this.configuration.path) {

@@ -114,6 +114,22 @@ const parseTorznabResult = (data) => {
 };
 
 
+const stringToDate = (string) => {
+    if (string instanceof Date) {
+        return string;
+    } else if (string) {
+        let d = new Date();
+        let [hours, minutes] = string.split(':');
+        console.log("Check converting: ", string, hours, minutes)
+        d.setHours(hours);
+        d.setMinutes(minutes);
+        console.log("Check converting2: ", d.toLocaleTimeString())
+        return d;
+    } else {
+        return null;
+    }
+}
+
 module.exports = {
     mapTorrent,
     TORRENTS_KEY,
@@ -121,5 +137,6 @@ module.exports = {
     supportedFormats,
     simpleHash,
     writeFileSyncRecursive,
-    parseTorznabResult
+    parseTorznabResult,
+    stringToDate
 }

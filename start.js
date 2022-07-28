@@ -1,11 +1,17 @@
 var app = require('./app');
 var http = require('http');
 var open = require('open');
+var schedule = require('node-schedule');
 
 function start(port = 3000) {
 
     process.env.NODE_ENV = "development"
 
+
+    process.on('SIGINT', function () {
+        schedule.gracefulShutdown()
+            .then(() => process.exit(0))
+    })
 
     process.on('uncaughtException', function (err) {
         try {
