@@ -19,6 +19,7 @@
     "bundle": "electron-builder",
     "bundle-linux": "electron-builder -l -p always",
     "bundle-win": "electron-builder -w -p always",
+    "bundle-mac": "electron-builder -m -p always",
     "bundleg": "electron-builder -p always"
   },
   "build": {
