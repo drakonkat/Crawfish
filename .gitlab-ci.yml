@@ -59,8 +59,7 @@ osx-build:
     paths:
       - 'dist/*.dmg'
       - 'dist/*.zip'
-  only:
-    - main
+  when: manual
 
 win-build:
   stage: build
