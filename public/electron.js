@@ -4,11 +4,16 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
-const {autoUpdater} = require("electron-updater")
+const {autoUpdater} = require("electron-updater");
+const { writeFileSyncRecursive } = require("../routes/classes/utility");
+const fs = require('fs');
+const os = require('os')
+
+userDataPath = path.join(os.homedir(), "Crawfish");
 
 let mainWindow;
 const createWindow = () => {
-    let title = "CrawFish - 1.7.4"
+    let title = "CrawFish - 1.7.5"
     let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
@@ -24,6 +29,11 @@ const createWindow = () => {
      * Controllo di versione TODO Better handling
      */
     let subprocess;
+    // let pathConfig = "/home/mm/Crawfish/config_db/LOCK"
+    let pathConfig = path.join(userDataPath, "config_db", "LOCK") + "";
+    if (!fs.existsSync(pathConfig)) {
+        writeFileSyncRecursive(pathConfig)
+    }
     if (isDev) {
         subprocess = cp.fork(
             "bin/www"
