@@ -105,13 +105,22 @@ class ConfigStorage {
                     ...result.opts,
                     tracker: {...result.opts.tracker, wrtc: wrtc}
                 })
-                await this.setSpeedConf({
-                    ...result.speed,
-                    download: result.speed.download || result.opts.downloadLimit,
-                    upload: result.speed.upload || result.opts.uploadLimit,
-                    alternativeTimeStart: result.speed.alternativeTimeStart ? new Date(Date.parse(result.speed.alternativeTimeStart)) : null,
-                    alternativeTimeEnd: result.speed.alternativeTimeEnd ? new Date(Date.parse(result.speed.alternativeTimeEnd)) : null,
-                })
+                if (result.speed) {
+                    await this.setSpeedConf({
+                        ...result.speed,
+                        download: result.speed.download || result.opts.downloadLimit,
+                        upload: result.speed.upload || result.opts.uploadLimit,
+                        alternativeTimeStart: result.speed.alternativeTimeStart ? new Date(Date.parse(result.speed.alternativeTimeStart)) : null,
+                        alternativeTimeEnd: result.speed.alternativeTimeEnd ? new Date(Date.parse(result.speed.alternativeTimeEnd)) : null,
+                    })
+                } else {
+                    await this.setSpeedConf({
+                        download: result.opts.downloadLimit,
+                        upload: result.opts.uploadLimit,
+                        alternativeTimeStart: null,
+                        alternativeTimeEnd: null,
+                    })
+                }
                 // Verify old settings method
                 {
                     let torrents = JSON.parse(result[TORRENTS_KEY] || "[]");

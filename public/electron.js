@@ -8,7 +8,7 @@ const {autoUpdater} = require("electron-updater")
 
 let mainWindow;
 const createWindow = () => {
-    let title = "CrawFish - 1.7.3"
+    let title = "CrawFish - 1.7.5"
     let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
