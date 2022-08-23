@@ -1,6 +1,6 @@
 {
   "name": "crawfish",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
@@ -65,6 +65,7 @@
     "get-port": "^6.1.2",
     "http-errors": "~1.6.3",
     "mime-types": "^2.1.35",
+    "moment": "^2.29.4",
     "morgan": "~1.9.1",
     "node-schedule": "^2.1.0",
     "open": "^8.4.0",

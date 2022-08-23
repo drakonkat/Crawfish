@@ -1,5 +1,6 @@
 const express = require("express");
 const {stringToDate} = require("./classes/utility");
+const moment = require("moment");
 const router = express.Router();
 
 
@@ -65,8 +66,8 @@ router.get('/', async (req, res, next) => {
         downloadPath: req.app.locals.storage.configuration.downloadPath,
         uploadSpeed: req.app.locals.storage.configuration.opts.uploadLimit,
         ...req.app.locals.storage.configuration.speed,
-        alternativeTimeStart: alternativeTimeStart ? new Date(alternativeTimeStart).toLocaleTimeString() : null,
-        alternativeTimeEnd: alternativeTimeEnd ? new Date(alternativeTimeEnd).toLocaleTimeString() : null
+        alternativeTimeStart: alternativeTimeStart ? moment(alternativeTimeStart).format("HH:mm") : null,
+        alternativeTimeEnd: alternativeTimeEnd ? moment(alternativeTimeEnd).format("HH:mm") : null
     })
 });
 
