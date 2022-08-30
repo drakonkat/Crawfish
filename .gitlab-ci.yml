@@ -1,5 +1,5 @@
 variables:
-  IMAGE_VERSION: "1.7.5"
+  IMAGE_VERSION: "1.7.6"
   GIT_DEPTH: '3'
   SIMPLECOV: 'true'
   RUST_BACKTRACE: '1'

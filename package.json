@@ -1,6 +1,6 @@
 {
   "name": "crawfish",
-  "version": "1.7.6",
+  "version": "1.7.6-beta",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
@@ -23,6 +23,7 @@
     "bundleg": "electron-builder -p always"
   },
   "build": {
+    "generateUpdatesFilesForAllChannels": true,
     "appId": "com.tnd.crawfish",
     "productName": "CrawFish",
     "win": {
@@ -45,7 +46,7 @@
       "uninstallerIcon": "./public/build/favicon.ico"
     },
     "icon": "public/build/logo512.png",
-    "copyright": "Copyright 20120-2022 TND"
+    "copyright": "Copyright 2020-2022 TND"
   },
   "main": "public/electron.js",
   "dependencies": {

@@ -1,11 +1,12 @@
 const electron = require("electron");
 const app = electron.app;
+const Menu = electron.Menu;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
 const cp = require("child_process");
 const {autoUpdater} = require("electron-updater");
-const { writeFileSyncRecursive } = require("../routes/classes/utility");
+const {writeFileSyncRecursive} = require("../routes/classes/utility");
 const fs = require('fs');
 const os = require('os')
 
@@ -13,7 +14,19 @@ userDataPath = path.join(os.homedir(), "Crawfish");
 
 let mainWindow;
 const createWindow = () => {
-    let title = "CrawFish - 1.7.5"
+    //Setup menu
+    let menu = Menu.getApplicationMenu(); // get default menu
+    let items = []
+    menu.items.forEach((item) => {
+        console.log("Menu voice: ", item.role)
+        if (item.role !== "help") {
+            items.push(item)
+        }
+    })
+    Menu.setApplicationMenu(Menu.buildFromTemplate(items));
+
+
+    let title = "CrawFish - 1.7.6"
     let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
@@ -24,7 +37,9 @@ const createWindow = () => {
     mainWindow.on('page-title-updated', (evt) => {
         evt.preventDefault();
     });
-    mainWindow.setMenuBarVisibility(false)
+    // mainWindow.setMenuBarVisibility(false)
+
+
     /**
      * Controllo di versione TODO Better handling
      */
