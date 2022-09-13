@@ -31,7 +31,7 @@ benchmarks/graphs
 .git
 /Downloads
 /build
-/website
+
 config.json
 
 node_modules
