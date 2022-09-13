@@ -1,7 +1,7 @@
 FROM node:16
 #APP
 WORKDIR /app
-COPY ["package.json", "package-lock.json", "./"]
+COPY ["package.json", "./"]
 RUN npm i --prefix /website/crawfish-official
 RUN npm run --prefix /website/crawfish-official build
 RUN npm install -g @mapbox/node-pre-gyp
