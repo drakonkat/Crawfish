@@ -27,7 +27,7 @@ express-alpha:
     - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION-alpha
     - docker logout
   only:
-    - feature-*
+    - feature-websocket
 
 express:
   image: docker:latest
