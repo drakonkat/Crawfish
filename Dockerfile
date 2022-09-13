@@ -1,6 +1,7 @@
 FROM node:16
 WORKDIR /usr/src
 WORKDIR /usr/src/app/website/crawfish-official/
+RUN ls
 RUN npm install
 RUN npm run build
 
