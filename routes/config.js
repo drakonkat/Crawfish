@@ -41,7 +41,23 @@ router.post('/edit', async (req, res, next) => {
         download,
         upload
     });
-    res.status(200).json(true)
+    {
+        let {
+            alternativeTimeStart,
+            alternativeTimeEnd
+        } = req.app.locals.storage.configuration.speed;
+        res.status(200).json({
+            actualDownload: req.app.locals.storage.liveData.client.downloadSpeed,
+            actualUpload: req.app.locals.storage.liveData.client.uploadSpeed,
+            actualRatio: req.app.locals.storage.liveData.client.ratio,
+            downloadSpeed: req.app.locals.storage.configuration.opts.downloadLimit,
+            downloadPath: req.app.locals.storage.configuration.downloadPath,
+            uploadSpeed: req.app.locals.storage.configuration.opts.uploadLimit,
+            ...req.app.locals.storage.configuration.speed,
+            alternativeTimeStart: alternativeTimeStart ? moment(alternativeTimeStart).format("HH:mm") : null,
+            alternativeTimeEnd: alternativeTimeEnd ? moment(alternativeTimeEnd).format("HH:mm") : null
+        })
+    }
 });
 router.get('/', async (req, res, next) => {
     /*
@@ -57,7 +73,6 @@ router.get('/', async (req, res, next) => {
         alternativeTimeStart,
         alternativeTimeEnd
     } = req.app.locals.storage.configuration.speed;
-    console.log("CHECK VALUE: ", alternativeTimeStart)
     res.status(200).json({
         actualDownload: req.app.locals.storage.liveData.client.downloadSpeed,
         actualUpload: req.app.locals.storage.liveData.client.uploadSpeed,

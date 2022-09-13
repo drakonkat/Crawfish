@@ -2,6 +2,7 @@ var app = require('./app');
 var http = require('http');
 var open = require('open');
 var schedule = require('node-schedule');
+const {wss} = require("./websocket/server");
 
 function start(port = 3000) {
 
@@ -34,6 +35,7 @@ function start(port = 3000) {
     }
     app.set('port', port);
 
+
     /**
      * Create HTTP server.
      */
@@ -46,9 +48,7 @@ function start(port = 3000) {
 
     server.listen(port, async () => {
         console.log('Express server stared! Mode: ', process.env.NODE_ENV);
-        if (process.env.NODE_ENV == "production") {
-            await open("http://localhost:" + port + "/build/index.html"); // opens `web/index.html` page
-        }
+        app.locals.storage.setServer(server)
     });
 
     server.on('error', onError);

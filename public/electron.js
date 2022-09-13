@@ -59,7 +59,7 @@ const createWindow = () => {
                 switch (message) {
                     case "READY":
                         mainWindow.loadURL(
-                            "http://localhost:" + port + "/build/index.html?port=" + port
+                            "http://localhost:" + port + "/crawfish-official/index.html"
                         );
                         mainWindow.webContents.openDevTools();
                         mainWindow.on("closed", () => {

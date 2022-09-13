@@ -16,6 +16,7 @@ const streamRouter = require('./routes/stream');
 const fileRouter = require('./routes/files');
 const ConfigStorage = require("./routes/classes/ConfigStorage");
 const SearxFetcher = require("./routes/classes/SearxFetcher");
+const wss = require("./websocket/server");
 const app = express();
 
 // Setup storage part
@@ -58,7 +59,7 @@ app.use(logger('[:date[clf]] :response-time ms :remote-addr ":method :url" :stat
 app.use(compression())
 app.use(logger('dev'));
 app.use(cors());
-app.use(timeout('10s'))
+app.use(timeout('40s'))
 
 
 app.engine('pug', require('pug').__express)
@@ -68,6 +69,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
+
 
 app.use('/', indexRouter);
 app.use('/config', configRouter);
@@ -94,4 +96,6 @@ app.use(function (err, req, res, next) {
     res.json('error');
 });
 
+
 module.exports = app;
+

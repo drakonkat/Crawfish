@@ -1,12 +1,15 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY} = require("./utility");
+const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY, simpleHash} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
 const PouchDB = require('pouchdb');
 const wrtc = require('wrtc')
+const WebSocket = require('ws')
 const schedule = require('node-schedule');
+const wss = require("../../websocket/server");
+const moment = require("moment/moment");
 
 userDataPath = path.join(os.homedir(), "Crawfish");
 
@@ -142,7 +145,7 @@ class ConfigStorage {
                 let torrents = await this.getAllTorrent();
                 torrents.forEach((x, index) => {
                     if (!x.paused) {
-                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload()});
+                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload(), skipVerify: true});
                     }
                 });
 
@@ -326,6 +329,59 @@ class ConfigStorage {
 
     getUploadLimit() {
         return this.configuration.opts.uploadLimit;
+    }
+
+    setServer(server) {
+        this.server = server;
+        const wssServer = wss(server);
+        wssServer.on('connection', (ws) => {
+            ws.on('message', async (data) => {
+                console.log('received:', data.toString());
+                data = data.toString();
+                switch (data) {
+                    case "CONF":
+                        if (this.liveData.client) {
+                            let {
+                                alternativeTimeStart,
+                                alternativeTimeEnd
+                            } = this.configuration.speed;
+                            let value = {
+                                actualDownload: this.liveData.client.downloadSpeed,
+                                actualUpload: this.liveData.client.uploadSpeed,
+                                actualRatio: this.liveData.client.ratio,
+                                downloadSpeed: this.configuration.opts.downloadLimit,
+                                downloadPath: this.configuration.downloadPath,
+                                uploadSpeed: this.configuration.opts.uploadLimit,
+                                ...this.configuration.speed,
+                                alternativeTimeStart: alternativeTimeStart ? moment(alternativeTimeStart).format("HH:mm") : null,
+                                alternativeTimeEnd: alternativeTimeEnd ? moment(alternativeTimeEnd).format("HH:mm") : null
+                            }
+                            ws.send(JSON.stringify({key: data, value}));
+                        }
+                        break;
+                    case "STATUS":
+                        let torrents = this.liveData.client.torrents.map(mapTorrent);
+                        let oldTorrent = await this.getAllTorrent();
+                        torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
+                        torrents.forEach((t) => {
+                            if (t && t.files) {
+                                t.files.forEach((f) => {
+                                    f.id = simpleHash(t.infoHash, f.name);
+                                })
+                            }
+                        })
+                        ws.send(JSON.stringify({key: data, value: torrents}));
+                        break;
+                    default:
+                        if (this.liveData.client) {
+                            ws.send(JSON.stringify({
+                                key: data,
+                                value: {downloadSpeed: this.liveData.client.downloadSpeed}
+                            }));
+                        }
+                }
+            });
+        });
     }
 
     async setSpeedConf(speed = {

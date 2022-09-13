@@ -1,10 +1,10 @@
-FROM node:16.8.0
+FROM node:16
 WORKDIR /usr/src
 RUN git clone https://gitlab.com/tndsite/webtorrent-web-gui-standalone.git
-WORKDIR /usr/src/webtorrent-web-gui-standalone/
+WORKDIR /usr/src/app/website/crawfish-official/
 RUN rm ./package-lock.json
 RUN npm install
-RUN npm run build-local
+RUN npm run build
 
 #APP
 WORKDIR /usr/src/app
