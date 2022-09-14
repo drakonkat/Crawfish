@@ -336,7 +336,7 @@ class ConfigStorage {
         const wssServer = wss(server);
         wssServer.on('connection', (ws) => {
             ws.on('message', async (data) => {
-                console.log('received:', data.toString());
+
                 data = data.toString();
                 switch (data) {
                     case "CONF":

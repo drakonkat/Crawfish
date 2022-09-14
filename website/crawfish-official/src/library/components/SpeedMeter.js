@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Download, Upload} from "@mui/icons-material";
 import {humanFileSize} from "../utils";
 import {Tooltip, Typography} from "@mui/material";
@@ -7,22 +7,22 @@ import {observer} from "mobx-react";
 function SpeedMeter(props) {
     let {store} = props;
     let {conf} = store;
-    const refreshStatus = async () => {
-        try {
-            let {client} = props
-            client.getConfWs();
-        } catch (e) {
-            console.error(e)
-        }
-    }
-    useEffect(() => {
-        refreshStatus()
-        setInterval(() => {
-            refreshStatus()
-        }, 1000)
-        return clearInterval
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    // const refreshStatus = async () => {
+    // try {
+    //     let {client} = props
+    //     client.getConfWs();
+    // } catch (e) {
+    //     console.error(e)
+    // }
+    // }
+    // useEffect(() => {
+    // refreshStatus()
+    // setInterval(() => {
+    //     refreshStatus()
+    // }, 1000)
+    // return clearInterval
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
     let {
         actualDownload,

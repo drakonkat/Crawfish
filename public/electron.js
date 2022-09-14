@@ -1,6 +1,8 @@
 const electron = require("electron");
 const app = electron.app;
 const Menu = electron.Menu;
+const MenuItem = electron.MenuItem;
+const Dialog = electron.dialog;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
@@ -9,6 +11,7 @@ const {autoUpdater} = require("electron-updater");
 const {writeFileSyncRecursive} = require("../routes/classes/utility");
 const fs = require('fs');
 const os = require('os')
+const package = require("./../package.json")
 
 userDataPath = path.join(os.homedir(), "Crawfish");
 
@@ -19,14 +22,61 @@ const createWindow = () => {
     let items = []
     menu.items.forEach((item) => {
         console.log("Menu voice: ", item.role)
-        if (item.role !== "help") {
+        if (item.role === "filemenu") {
             items.push(item)
         }
     })
     Menu.setApplicationMenu(Menu.buildFromTemplate(items));
+    Menu.getApplicationMenu().append(new MenuItem({
+        label: 'Update option',
+        submenu: [
+            {
+                label: "Search for beta update",
+                click: () => {
+                    autoUpdater.channel = "beta";
+                    autoUpdater.checkForUpdates().then((r) => {
+                        if (!r) {
+                            let output = Dialog.showMessageBoxSync({
+                                title: "Beta available",
+                                message: "Do you want to update the solution to beta version (It will have new feature, but even new bug)?",
+                                type: "question",
+                                buttons: ["Yes, update at the next start!", "No, Thanks!"]
+                            })
+                            switch (output) {
+                                case 0:
+                                    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update beta check: ", r));
+                                    break;
+                                default:
+                            }
+                        }
+                    })
+                }
+            }, {
+                label: "Search for stable update",
+                click: () => {
+                    autoUpdater.channel = "latest";
+                    autoUpdater.checkForUpdates().then((r) => {
+                        if (!r) {
+                            let output = Dialog.showMessageBoxSync({
+                                title: "Stable available",
+                                message: "Do you want to update the solution to stable version?",
+                                type: "question",
+                                buttons: ["Yes, update at the next start!", "No, Thanks!"]
+                            })
+                            switch (output) {
+                                case 0:
+                                    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update beta check: ", r));
+                                    break;
+                                default:
+                            }
+                        }
+                    })
+                }
+            },
+        ]
+    }))
 
-
-    let title = "CrawFish - 1.7.6"
+    let title = "CrawFish - " + package.version;
     let port = 3000;
     mainWindow = new BrowserWindow({
         width: 1280,
@@ -69,6 +119,24 @@ const createWindow = () => {
                                 console.log("Exception closing process, probably already closed by Operating system")
                             }
                             return (mainWindow = null)
+                        });
+                        autoUpdater.channel = "latest"
+                        autoUpdater.checkForUpdates().then((r) => {
+                            if (!r) {
+                                let output = Dialog.showMessageBoxSync({
+                                    title: "New update available",
+                                    message: "Is ok to update :) Click yes to proceed",
+                                    type: "question",
+                                    buttons: ["Yes, update at the next start!", "No, update can break everything!"]
+                                })
+                                switch (output) {
+                                    case 0:
+                                        autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update check: ", r));
+                                        break;
+                                    default:
+                                }
+                            }
+
                         });
                         break;
                     case "PORT":
@@ -116,9 +184,7 @@ const createWindow = () => {
             }
         });
     }
-
-
-    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update: ", r))
+    autoUpdater.channel = "beta";
 }
 
 app.on("ready", createWindow)

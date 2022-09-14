@@ -22,16 +22,20 @@ export class WebTorrentHelper {
         this.ws = new WebSocket(wssBasePath + 'wss');
         this.ws.onopen = () => {
             console.info("Connection opened with the client")
+            this.checkStatusWs()
+            this.getConfWs()
         };
         this.ws.onmessage = (event) => {
             let data = JSON.parse(event.data);
-            console.info("Received Data: ", data)
+
             switch (data.key) {
                 case "CONF":
                     conf.set(data.value)
+                    setTimeout(this.getConfWs, 500)
                     break;
                 case "STATUS":
                     status.set(data.value)
+                    setTimeout(this.checkStatusWs, 500)
                     break;
             }
         };

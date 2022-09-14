@@ -70,28 +70,18 @@ class WebTorrentGuiV2 extends Component {
         let {host, port, baseUrl, store} = this.props
         let {loading} = store;
         this.setState({client: new WebTorrentHelper(baseUrl ? {baseUrl} : {baseUrl: host + ":" + port}, store)}, async () => {
-            await this.refreshStatus();
             await this.refreshCategory();
             loading.set(false);
             // this.setState({
             //     enabledView: SETTINGS
             // })
         })
-        this.interval = setInterval(this.refreshStatus, 1000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    refreshStatus = async () => {
-        try {
-            let {client, filterTorrent} = this.state
-            await client.checkStatusWs();
-        } catch (e) {
-            console.error(e)
-        }
-    }
     refreshCategory = async () => {
         try {
             let {client} = this.state
@@ -114,7 +104,6 @@ class WebTorrentGuiV2 extends Component {
                     client.removeTorrent({magnet: x.magnet})
                 }
             })
-            this.refreshStatus().catch(console.error)
         } catch (e) {
             console.error(e)
         }
@@ -131,7 +120,6 @@ class WebTorrentGuiV2 extends Component {
                     client.destroyTorrent({magnet: x.magnet})
                 }
             })
-            this.refreshStatus().catch(console.error)
         } catch (e) {
             console.error(e)
         }
@@ -145,10 +133,9 @@ class WebTorrentGuiV2 extends Component {
             let torrents = status.get;
             torrents.forEach(x => {
                 if (selectedTorrent == null || selectedTorrent.length < 1 || selectedTorrent.includes(x.infoHash)) {
-                    client.addTorrent({magnet: x.magnet})
+                    client.addTorrent({magnet: x.magnet, path: x.path})
                 }
             })
-            this.refreshStatus().catch(console.error)
         } catch (e) {
             console.error(e)
         }
@@ -164,7 +151,6 @@ class WebTorrentGuiV2 extends Component {
                     client.pauseTorrent({magnet: x.magnet})
                 }
             })
-            this.refreshStatus().catch(console.error)
         } catch (e) {
             console.error(e)
         }
@@ -175,10 +161,10 @@ class WebTorrentGuiV2 extends Component {
     }
 
     renderBody = () => {
-        let {enabledView, enabledCategory, client, search, selectedTorrent} = this.state;
+        let {enabledView, enabledCategory, filterTorrent, client, search, selectedTorrent} = this.state;
         let {remote, store} = this.props;
         let {status} = store;
-        let torrents = status.get;
+        let torrents = status.get.filter(filterTorrent);
 
         switch (enabledView) {
             case SETTINGS:
@@ -438,7 +424,7 @@ class WebTorrentGuiV2 extends Component {
                                     return x.paused === false && x.progress !== 1;
                                 },
                                 enabledView: CLIENT_DOWNLOAD
-                            }, this.refreshStatus)
+                            })
                         }}
                         filterSeeding={() => {
                             this.setState({
@@ -446,7 +432,7 @@ class WebTorrentGuiV2 extends Component {
                                     return x.paused === false && x.progress >= 1;
                                 },
                                 enabledView: CLIENT_SEEDING
-                            }, this.refreshStatus)
+                            })
                         }}
                         filterHome={() => {
                             this.setState({
@@ -454,7 +440,7 @@ class WebTorrentGuiV2 extends Component {
                                     return true;
                                 },
                                 enabledView: CLIENT
-                            }, this.refreshStatus)
+                            })
                         }}
                     />
                     <Divider orientation={"vertical"}/>
@@ -517,7 +503,6 @@ class WebTorrentGuiV2 extends Component {
                     open={showAddTorrent}
                     onSubmit={(path, magnet) => {
                         client.addTorrent({magnet, path})
-                            .then(this.refreshStatus)
                             .catch(console.error)
                         this.setState({showAddTorrent: false})
                     }}
