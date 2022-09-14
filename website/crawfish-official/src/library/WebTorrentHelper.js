@@ -15,6 +15,7 @@ export class WebTorrentHelper {
         if (this.config.baseUrl.includes("https://")) {
             wssBasePath = this.config.baseUrl.replace("https://", "wss://")
             wssBasePath = wssBasePath.replace(":3000", "")
+            this.config.baseUrl = this.config.baseUrl.replace(":3000", "")
         } else {
             wssBasePath = this.config.baseUrl.replace("http://", "ws://")
         }

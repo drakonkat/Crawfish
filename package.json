@@ -16,11 +16,11 @@
     "start-electron": "electron .",
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
-    "bundle": "electron-builder",
-    "bundle-linux": "electron-builder -l -p always",
-    "bundle-win": "electron-builder -w -p always",
-    "bundle-mac": "electron-builder -m -p always",
-    "bundleg": "electron-builder -p always"
+    "bundle": "npm run build --prefix website/crawfish-official && electron-builder",
+    "bundle-linux": "npm run build --prefix website/crawfish-official && electron-builder -l -p always",
+    "bundle-win": "npm run build --prefix website/crawfish-official && electron-builder -w -p always",
+    "bundle-mac": "npm run build --prefix website/crawfish-official && electron-builder -m -p always",
+    "bundleg": "npm run build --prefix website/crawfish-official && electron-builder -p always"
   },
   "build": {
     "generateUpdatesFilesForAllChannels": true,
