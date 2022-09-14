@@ -11,7 +11,13 @@ export class WebTorrentHelper {
     constructor(config, store) {
         this.config = config;
         let {conf, status} = store;
-        let wssBasePath = this.config.baseUrl.includes("https://") ? this.config.baseUrl.replace("https://", "wss://") : this.config.baseUrl.replace("http://", "ws://")
+        let wssBasePath;
+        if (this.config.baseUrl.includes("https://")) {
+            wssBasePath = this.config.baseUrl.replace("https://", "wss://")
+            wssBasePath = wssBasePath.replace(":3000", "")
+        } else {
+            wssBasePath = this.config.baseUrl.replace("http://", "ws://")
+        }
         this.ws = new WebSocket(wssBasePath + 'wss');
         this.ws.onopen = () => {
             console.info("Connection opened with the client")
