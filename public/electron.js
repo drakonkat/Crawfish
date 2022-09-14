@@ -35,7 +35,7 @@ const createWindow = () => {
                 click: () => {
                     autoUpdater.channel = "beta";
                     autoUpdater.checkForUpdates().then((r) => {
-                        if (!r) {
+                        if (r) {
                             let output = Dialog.showMessageBoxSync({
                                 title: "Beta available",
                                 message: "Do you want to update the solution to beta version (It will have new feature, but even new bug)?",
@@ -56,7 +56,7 @@ const createWindow = () => {
                 click: () => {
                     autoUpdater.channel = "latest";
                     autoUpdater.checkForUpdates().then((r) => {
-                        if (!r) {
+                        if (r) {
                             let output = Dialog.showMessageBoxSync({
                                 title: "Stable available",
                                 message: "Do you want to update the solution to stable version?",
@@ -122,7 +122,7 @@ const createWindow = () => {
                         });
                         autoUpdater.channel = "latest"
                         autoUpdater.checkForUpdates().then((r) => {
-                            if (!r) {
+                            if (r) {
                                 let output = Dialog.showMessageBoxSync({
                                     title: "New update available",
                                     message: "Is ok to update :) Click yes to proceed",
@@ -170,6 +170,24 @@ const createWindow = () => {
                                 console.log("Exception closing process, probably already closed by Operating system")
                             }
                             return (mainWindow = null)
+                        });
+                        autoUpdater.channel = "latest"
+                        autoUpdater.checkForUpdates().then((r) => {
+                            if (r) {
+                                let output = Dialog.showMessageBoxSync({
+                                    title: "New update available",
+                                    message: "Is ok to update :) Click yes to proceed",
+                                    type: "question",
+                                    buttons: ["Yes, update at the next start!", "No, update can break everything!"]
+                                })
+                                switch (output) {
+                                    case 0:
+                                        autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update check: ", r));
+                                        break;
+                                    default:
+                                }
+                            }
+
                         });
                         break;
                     case "PORT":
