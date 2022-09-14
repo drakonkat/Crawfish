@@ -31,7 +31,7 @@ benchmarks/graphs
 .git
 /Downloads
 /build
-
+/dist
 config.json
 
 node_modules

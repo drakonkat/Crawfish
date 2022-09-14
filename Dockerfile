@@ -1,9 +1,10 @@
 FROM node:16
 #APP
 WORKDIR /app
-COPY ["package.json", "./"]
-RUN npm i --prefix /website/crawfish-official
-RUN npm run --prefix /website/crawfish-official build
+COPY ./ ./
+RUN ls website/crawfish-official
+RUN npm i --prefix website/crawfish-official --legacy-peer-deps
+RUN npm run build --prefix website/crawfish-official
 RUN npm install -g @mapbox/node-pre-gyp
 RUN npm install
 COPY . .
