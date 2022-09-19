@@ -22,9 +22,9 @@ express-alpha:
     - docker:dind
   script:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
-    - docker pull mauromazzocchetti/webtorrent-express-api:latest
-    - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION-alpha" ./
-    - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION-alpha
+    - docker pull mauromazzocchetti/crawfish:latest
+    - docker build --progress=plain --tag="mauromazzocchetti/crawfish:$IMAGE_VERSION-alpha" ./
+    - docker push mauromazzocchetti/crawfish:$IMAGE_VERSION-alpha
     - docker logout
   only:
     - feature-websocket
@@ -36,10 +36,10 @@ express:
     - docker:dind
   script:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
-    - docker pull mauromazzocchetti/webtorrent-express-api:latest
-    - docker build --progress=plain --tag="mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION" --tag="mauromazzocchetti/webtorrent-express-api:latest" ./
-    - docker push mauromazzocchetti/webtorrent-express-api:$IMAGE_VERSION
-    - docker push mauromazzocchetti/webtorrent-express-api:latest
+    - docker pull mauromazzocchetti/crawfish:latest
+    - docker build --progress=plain --tag="mauromazzocchetti/crawfish:$IMAGE_VERSION" --tag="mauromazzocchetti/crawfish:latest" ./
+    - docker push mauromazzocchetti/crawfish:$IMAGE_VERSION
+    - docker push mauromazzocchetti/crawfish:latest
     - docker logout
   only:
     - main
