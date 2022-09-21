@@ -44,6 +44,7 @@ const options = {
         MuiContainer: {
             styleOverrides: {
                 root: {
+                    overflow:"hidden",
                     paddingLeft: "0px",
                     paddingRight: "0px",
                     height: "100%",

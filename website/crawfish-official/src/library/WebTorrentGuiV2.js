@@ -1,42 +1,8 @@
 import React, {Component} from 'react';
 import {observer} from "mobx-react";
 import {WebTorrentHelper} from "./WebTorrentHelper";
-import {
-    Button,
-    Checkbox,
-    Collapse,
-    Divider,
-    IconButton,
-    InputAdornment,
-    LinearProgress,
-    List,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    Snackbar,
-    Stack,
-    TableCell,
-    TableRow,
-    TextField,
-    Tooltip,
-    Typography
-} from "@mui/material";
-import {
-    AddCircle,
-    ContentCopy,
-    Delete,
-    DeleteForever,
-    DownloadForOffline,
-    FolderOpen,
-    Link,
-    OndemandVideo,
-    PauseCircle,
-    PlayCircle,
-    PlayCircleOutline,
-    Search
-} from "@mui/icons-material";
-import {copyToClipboard, humanFileSize, toTime} from "./utils";
-import {LinearProgressWithLabel} from "./components/LinearProgressWithLabel";
+import {Button, Divider, InputAdornment, LinearProgress, Snackbar, Stack, TextField, Tooltip} from "@mui/material";
+import {AddCircle, Delete, DeleteForever, PauseCircle, PlayCircle, Search} from "@mui/icons-material";
 
 import {Menu} from "./components/Menu";
 import AddTorrent from "./components/AddTorrent";
@@ -44,10 +10,10 @@ import AddTorrent from "./components/AddTorrent";
 import TorrentClientTable from "./components/TorrentClientTable";
 import FilesTable from "./components/FilesTable";
 import {grey} from "@mui/material/colors";
-import FileElement from "./components/FileElement";
 import {CLIENT, CLIENT_DOWNLOAD, CLIENT_SEEDING, GAMES, MOVIES, SETTINGS, TVSHOW} from "./types";
 import {SettingsPage} from "./components/SettingsPage";
 import SpeedMeter from "./components/SpeedMeter";
+import TorrentTableRow from "./components/TorrentTableRow";
 
 class WebTorrentGuiV2 extends Component {
 
@@ -189,155 +155,14 @@ class WebTorrentGuiV2 extends Component {
                     torrents={torrents}
                     predicate={x => selectedTorrent.includes(x.infoHash)}
                     callbackfn={(torrent, index) => {
-                        let videoFiles = [];
-                        torrent.files.forEach(f => {
-                            if (f.mime && f.mime.includes("video")) {
-                                videoFiles.push(f)
-                            }
-                        })
-                        let state;
-                        let color = "primary";
-                        if (torrent.paused) {
-                            state = "paused";
-                            color = "warning";
-                        } else if (torrent.progress === 1) {
-                            state = "completed";
-                            color = "success";
-                        } else if (torrent.timeRemaining > 0) {
-                            state = toTime(torrent.timeRemaining)
-                        } else {
-                            state = "--:--"
-                        }
-                        let size = 0;
-                        torrent.files.forEach(file => {
-                            size = size + file.length
-                        })
-                        let isRowSelected = this.isRowSelected(torrent.infoHash)
-                        let output = [];
-                        output.push(<TableRow key={torrent.infoHash || ("VALUE-" + index)} sx={{borderBottom: 'unset'}}>
-                            <TableCell key={"checkbox-child"} padding={"checkbox"} component="th" scope="row">
-                                <Checkbox
-                                    color="primary"
-                                    checked={isRowSelected}
-                                    onClick={() => this.onChangeRowSelection(torrent.infoHash)}
-                                />
-                            </TableCell>
-                            <TableCell key={"name-child"} component="th" scope="row">
-                                <Typography variant={"body2"}>{torrent.name}</Typography>
-                            </TableCell>
-                            <TableCell key={"progress-child"} align="right">
-                                <LinearProgressWithLabel color={color}
-                                                         value={torrent.progress * 100}/>
-                            </TableCell>
-                            <TableCell key={"state"} align="left">
-                                <Typography variant={"body2"}>
-                                    {state}
-                                </Typography>
-                            </TableCell>
-                            <TableCell key={"size-child"} align="left">
-                                <Typography variant={"body2"}>
-                                    {humanFileSize(size)}
-                                </Typography>
-                            </TableCell>
-                            <TableCell key={"files-child"} align="right">
-                                {videoFiles.length > 0 &&
-                                    <Tooltip key={"tooltip-video"}
-                                             title={videoFiles.length === 1 ? "Reproduce video file" :
-                                                 <List
-                                                     sx={{maxWidth: "200px", maxHeight: "400px", overflow: "auto"}}>
-                                                     {videoFiles.map((file, index) => {
-                                                         return <ListItemButton key={"TO_PLAY_ELEMENT_" + index}
-                                                                                onClick={() => {
-                                                                                    if (remote) {
-                                                                                        let a = document.createElement("a");
-                                                                                        a.href = client.fileStreamLink(file.id, file.name, remote);
-                                                                                        a.download = file.name;
-                                                                                        a.click();
-                                                                                    } else {
-                                                                                        client.fileOpen(file.id);
-                                                                                    }
-                                                                                }
-                                                                                }
-                                                         >
-                                                             <ListItemAvatar>
-                                                                 <Stack alignItems={"center"}
-                                                                        justifyContent={"center"}>
-                                                                     {`${Math.round(
-                                                                         file.progress * 100,
-                                                                     )}%`}
-                                                                     <OndemandVideo/>
-                                                                 </Stack>
-                                                             </ListItemAvatar>
-                                                             <ListItemText
-                                                                 primary={file.name}
-                                                             />
-                                                         </ListItemButton>
-                                                     })}
-                                                 </List>}>
-                                        <IconButton key={"play"} onClick={() => {
-                                            if (videoFiles.length === 1) {
-                                                let file = videoFiles[0]
-                                                if (remote) {
-                                                    let a = document.createElement("a");
-                                                    a.href = client.fileStreamLink(file.id, file.name, remote);
-                                                    a.download = file.name;
-                                                    a.click();
-                                                } else {
-                                                    client.fileOpen(file.id);
-                                                }
-                                            }
-                                        }}>
-                                            <PlayCircleOutline color={"primary"}/>
-                                        </IconButton>
-                                    </Tooltip>}
-                                {!remote && <Tooltip key={"open-torrent-folder"} title={"Open torrent folder"}>
-                                    <IconButton onClick={() => {
-                                        client.folderOpen(torrent.infoHash);
-                                    }}>
-                                        <FolderOpen color={"primary"}/>
-                                    </IconButton>
-                                </Tooltip>}
-                                <Tooltip key={"download-torrent-file"} title={"Download torrent file"}>
-                                    <IconButton onClick={() => {
-                                        let a = document.createElement("a");
-                                        a.href = client.getTorrentFile(torrent.infoHash, torrent.name + ".torrent", remote);
-                                        a.download = torrent.name + ".torrent";
-                                        a.click();
-                                    }}>
-                                        <DownloadForOffline color={"primary"}/>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip key={"copy-clipboard"} title={"Copy a link to share with friends!"}>
-                                    <IconButton onClick={() => {
-                                        copyToClipboard("https://tndsite.gitlab.io/quix-player/?magnet=" + torrent.infoHash, this.openSnackbar)
-                                        // copyToClipboard("https://btorrent.xyz/download#" + torrent.infoHash, this.openSnackbar)
-                                    }}>
-                                        <Link color={"primary"}/>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip key={"magnet-copy"} title={"Copy magnet to the clipboard"}>
-                                    <IconButton onClick={() => {
-                                        copyToClipboard(torrent.magnet, this.openSnackbar)
-                                    }}>
-                                        <ContentCopy color={"primary"}/>
-                                    </IconButton>
-                                </Tooltip>
-                            </TableCell>
-                        </TableRow>)
-                        output.push(<TableRow key={"Secondary-" + torrent.infoHash}>
-                            <TableCell key={"secondary-checkbox"} padding={"checkbox"}
-                                       sx={{paddingBottom: 0, paddingTop: 0}}
-                                       colSpan={6}>
-                                <Collapse in={isRowSelected} timeout="auto" unmountOnExit>
-                                    {torrent.files.map(f => {
-                                        return <FileElement key={"file-" + f.id}
-                                                            torrentMagnet={torrent.magnet}
-                                                            remote={remote} file={f} client={client}/>
-                                    })}
-                                </Collapse>
-                            </TableCell>
-                        </TableRow>)
-                        return (output)
+                        return <TorrentTableRow isRowSelected={this.isRowSelected(torrent.infoHash)}
+                                                onChangeRowSelection={this.onChangeRowSelection}
+                                                remote={remote}
+                                                client={client}
+                                                torrent={torrent}
+                                                index={index}
+                                                openSnackbar={this.openSnackbar}
+                        />
                     }}/>
             case TVSHOW:
             case GAMES:

@@ -1,6 +1,8 @@
 import axios from "axios";
 
 
+
+
 export class WebTorrentHelper {
 
     config = {
@@ -19,12 +21,25 @@ export class WebTorrentHelper {
         } else {
             wssBasePath = this.config.baseUrl.replace("http://", "ws://")
         }
+        this.refreshWs(wssBasePath, conf, status);
+        this.axios = axios.create({
+            baseURL: this.config.baseUrl,
+            timeout: 120000,
+            headers: {'X-Custom-Header': 'foobar'}
+        });
+    }
+
+    refreshWs(wssBasePath, conf, status) {
         this.ws = new WebSocket(wssBasePath + 'wss');
         this.ws.onopen = () => {
             console.info("Connection opened with the client")
             this.checkStatusWs()
             this.getConfWs()
         };
+        this.ws.onclose = (closeEvent, arg) => {
+            console.debug("Disconnected from ws: ", closeEvent, arg, this.ws.readyState !== WebSocket.OPEN, this.ws.readyState)
+            this.refreshWs(wssBasePath, conf, status)
+        }
         this.ws.onmessage = (event) => {
             let data = JSON.parse(event.data);
 
@@ -35,15 +50,12 @@ export class WebTorrentHelper {
                     break;
                 case "STATUS":
                     status.set(data.value)
-                    setTimeout(this.checkStatusWs, 500)
+                    setTimeout(this.checkStatusWs, 600)
+                    break;
+                default:
                     break;
             }
         };
-        this.axios = axios.create({
-            baseURL: this.config.baseUrl,
-            timeout: 120000,
-            headers: {'X-Custom-Header': 'foobar'}
-        });
     }
 
     addTorrent = (data) => {

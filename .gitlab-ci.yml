@@ -1,5 +1,5 @@
 variables:
-  IMAGE_VERSION: "1.7.8"
+  IMAGE_VERSION: "1.7.9-beta"
   GIT_DEPTH: '3'
   SIMPLECOV: 'true'
   RUST_BACKTRACE: '1'
@@ -22,12 +22,11 @@ express-alpha:
     - docker:dind
   script:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
-#    - docker pull mauromazzocchetti/crawfish:latest
-    - docker build --progress=plain --tag="mauromazzocchetti/crawfish:$IMAGE_VERSION-beta" ./
-    - docker push mauromazzocchetti/crawfish:$IMAGE_VERSION-beta
+    - docker build --progress=plain --tag="mauromazzocchetti/crawfish:$IMAGE_VERSION" ./
+    - docker push mauromazzocchetti/crawfish:$IMAGE_VERSION
     - docker logout
-  only:
-    - feature-websocket
+  except:
+    - main
 
 express:
   image: docker:latest

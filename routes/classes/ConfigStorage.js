@@ -145,7 +145,7 @@ class ConfigStorage {
                 let torrents = await this.getAllTorrent();
                 torrents.forEach((x, index) => {
                     if (!x.paused) {
-                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload(), skipVerify: true});
+                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload(), skipVerify: x.progress >= 1});
                     }
                 });
 

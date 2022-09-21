@@ -50,6 +50,7 @@ export function Menu(props) {
                         selected={enabledView === CLIENT}
                         onClick={() => {
                             props.filterHome()
+                            changeView(CLIENT, null)
                         }}
                     >
                         <ListItemAvatar>
@@ -65,6 +66,7 @@ export function Menu(props) {
                         selected={enabledView === CLIENT_DOWNLOAD}
                         onClick={() => {
                             props.filterDownload()
+                            changeView(CLIENT_DOWNLOAD, null)
                         }}
 
                     >
@@ -81,6 +83,7 @@ export function Menu(props) {
                         selected={enabledView === CLIENT_SEEDING}
                         onClick={() => {
                             props.filterSeeding()
+                            changeView(CLIENT_SEEDING, null)
                         }}
 
                     >
