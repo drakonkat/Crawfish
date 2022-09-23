@@ -46,6 +46,11 @@ class FilesTable extends Component {
                     let disabled = torrents.some(t => {
                         return t.name.includes(file.title)
                     })
+                    let color = "success";
+                    if(!file.seeders || file.seeders < 3){
+                     color = "error";
+                    }
+
                     return (<Stack
                         key={"FILES_" + index}
                         alignItems={"center"}
@@ -90,7 +95,7 @@ class FilesTable extends Component {
                                     variant={"body1"}>repacked {humanFileSize(file.repackSize)}</Typography>}
                             </Stack>
                         </Stack>
-                        <Tooltip title={file.name}>
+                        <Tooltip title={file.name + (color === "error" ? " (Low or unknown seed for this torrent, speed can be limited)": "")}>
                             <IconButton
                                 disabled={disabled}
                                 size={"medium"}
@@ -133,7 +138,7 @@ class FilesTable extends Component {
                                     })
                                 }}
                             >
-                                <CloudDownload fontSize={"large"} color={disabled ? "disabled" : "success"}/>
+                                <CloudDownload fontSize={"large"} color={disabled ? "disabled" : color}/>
                             </IconButton>
                         </Tooltip>
                     </Stack>)

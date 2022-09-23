@@ -71,8 +71,8 @@ function TorrentTableRow(props) {
                     onClick={() => onChangeRowSelection(torrent.infoHash)}
                 />
             </TableCell>
-            <TableCell key={"name-child"} component="th" scope="row">
-                <Typography variant={"body2"}>{torrent.name}</Typography>
+            <TableCell sx={{maxWidth:"250px"}} key={"name-child"} component="th" scope="row">
+                <Typography sx={{wordWrap: "break-word"}} variant={"body2"}>{torrent.name}</Typography>
             </TableCell>
             <TableCell key={"progress-child"} align="right">
                 <LinearProgressWithLabel color={color}

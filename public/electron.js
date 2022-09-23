@@ -44,7 +44,8 @@ const createWindow = () => {
                             })
                             switch (output) {
                                 case 0:
-                                    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update beta check: ", r));
+                                    autoUpdater.channel = "beta";
+                                    autoUpdater.checkForUpdatesAndNotify();
                                     break;
                                 default:
                             }
@@ -65,7 +66,8 @@ const createWindow = () => {
                             })
                             switch (output) {
                                 case 0:
-                                    autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update beta check: ", r));
+                                    autoUpdater.channel = "latest";
+                                    autoUpdater.checkForUpdatesAndNotify();
                                     break;
                                 default:
                             }
@@ -202,7 +204,7 @@ const createWindow = () => {
             }
         });
     }
-    autoUpdater.channel = "beta";
+    autoUpdater.channel = package.version.includes("beta") ? "beta" : "latest";
 }
 
 app.on("ready", createWindow)
