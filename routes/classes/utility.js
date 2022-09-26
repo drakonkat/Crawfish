@@ -71,6 +71,7 @@ function writeFileSyncRecursive(filename, content = "", charset) {
 
     // -- write file
     fs.writeFileSync(root + filepath, content, charset);
+    return;
 }
 
 const parseTorznabResult = (data) => {
