@@ -26,6 +26,10 @@ log.transports.file.level = 'info';
 log.transports.file.resolvePath = () => userDataPath + "/crawfish.log";
 console.log = log.log;
 Object.assign(console, log.functions);
+const updateNotification = {
+    title: "Crawfish downloaded",
+    body: "A new version is ready to be installed, when you close the software this will be automatically updated to the new version!"
+}
 
 let mainWindow;
 const createWindow = () => {
@@ -47,7 +51,8 @@ const createWindow = () => {
                 click: () => {
                     autoUpdater.channel = "beta";
                     autoUpdater.checkForUpdates().then((r) => {
-                        if (r) {
+                        console.log("Response updates: ", r && r.versionInfo.version !== package.version, r)
+                        if (r && r.versionInfo.version !== package.version) {
                             let output = Dialog.showMessageBoxSync({
                                 title: "Beta available",
                                 message: "Do you want to update the solution to beta version (It will have new feature, but even new bug)?",
@@ -57,19 +62,20 @@ const createWindow = () => {
                             switch (output) {
                                 case 0:
                                     autoUpdater.channel = "beta";
-                                    autoUpdater.checkForUpdatesAndNotify();
+                                    autoUpdater.checkForUpdatesAndNotify(updateNotification);
                                     break;
                                 default:
                             }
                         }
-                    })
+                    }).catch(console.error)
                 }
             }, {
                 label: "Search for stable update",
                 click: () => {
                     autoUpdater.channel = "latest";
                     autoUpdater.checkForUpdates().then((r) => {
-                        if (r) {
+                        console.log("Response updates stable: ", r && r.versionInfo.version !== package.version, r)
+                        if (r && !r.versionInfo.version.includes("beta") && r.versionInfo.version !== package.version) {
                             let output = Dialog.showMessageBoxSync({
                                 title: "Stable available",
                                 message: "Do you want to update the solution to stable version?",
@@ -79,12 +85,12 @@ const createWindow = () => {
                             switch (output) {
                                 case 0:
                                     autoUpdater.channel = "latest";
-                                    autoUpdater.checkForUpdatesAndNotify();
+                                    autoUpdater.checkForUpdatesAndNotify(updateNotification);
                                     break;
                                 default:
                             }
                         }
-                    })
+                    }).catch(console.error)
                 }
             },
         ]
@@ -191,7 +197,8 @@ const createWindow = () => {
                         });
                         autoUpdater.channel = package.version.includes("beta") ? "beta" : "latest";
                         autoUpdater.checkForUpdates().then((r) => {
-                            if (r) {
+                            console.log("Response updates: " + package.version.includes("beta") ? "beta" : "latest", r && r.versionInfo.version !== package.version, r)
+                            if (r && r.versionInfo.version !== package.version) {
                                 let output = Dialog.showMessageBoxSync({
                                     title: "New update available",
                                     message: "Is ok to update :) Click yes to proceed",
@@ -200,13 +207,13 @@ const createWindow = () => {
                                 })
                                 switch (output) {
                                     case 0:
-                                        autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update check: ", r));
+                                        autoUpdater.checkForUpdatesAndNotify(updateNotification).then(r => console.log("Update check: ", r));
                                         break;
                                     default:
                                 }
                             }
 
-                        });
+                        }).catch(console.error);
                         break;
                     case "PORT":
                         if (result.data) {
