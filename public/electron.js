@@ -1,5 +1,6 @@
 const electron = require("electron");
 const app = electron.app;
+const safeStorage = electron.safeStorage;
 const Menu = electron.Menu;
 const MenuItem = electron.MenuItem;
 const Dialog = electron.dialog;
@@ -17,7 +18,7 @@ const unhandled = require('electron-unhandled');
 const {Octokit} = require("octokit");
 
 const octokit = new Octokit({
-    auth: "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"
+    auth: process.env.GH_TOKEN
 })
 
 
@@ -159,9 +160,6 @@ const createWindow = () => {
                             }
                             return (mainWindow = null)
                         });
-                        setTimeout(() => {
-                            throw new Error("SOME ERROR HERE")
-                        }, 3000)
                         break;
                     case "PORT":
                         if (result.data) {
