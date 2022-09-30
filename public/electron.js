@@ -11,9 +11,21 @@ const {autoUpdater} = require("electron-updater");
 const {writeFileSyncRecursive} = require("../routes/classes/utility");
 const fs = require('fs');
 const os = require('os')
+const log = require('electron-log');
 const package = require("./../package.json")
+const unhandled = require('electron-unhandled');
+const {Octokit} = require("octokit");
 
-userDataPath = path.join(os.homedir(), "Crawfish");
+const octokit = new Octokit({
+    auth: "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"
+})
+
+
+const userDataPath = path.join(os.homedir(), "Crawfish");
+log.transports.file.level = 'info';
+log.transports.file.resolvePath = () => userDataPath + "/crawfish.log";
+console.log = log.log;
+Object.assign(console, log.functions);
 
 let mainWindow;
 const createWindow = () => {
@@ -77,6 +89,25 @@ const createWindow = () => {
             },
         ]
     }))
+    unhandled({
+        showDialog: true,
+        logger: console.error,
+        reportButton: (error) => {
+            octokit.request('POST /repos/drakonkat/crawfish/issues', {
+                owner: 'drakonkat',
+                repo: 'crawfish',
+                title: 'Error launching electron app',
+                body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n`,
+                assignees: [
+                    'drakonkat'
+                ],
+                milestone: null,
+                labels: [
+                    'automatic-bug-report'
+                ]
+            }).catch(console.error)
+        }
+    });
 
     let title = "CrawFish - " + package.version;
     let port = 3000;
@@ -122,24 +153,9 @@ const createWindow = () => {
                             }
                             return (mainWindow = null)
                         });
-                        autoUpdater.channel = "latest"
-                        autoUpdater.checkForUpdates().then((r) => {
-                            if (r) {
-                                let output = Dialog.showMessageBoxSync({
-                                    title: "New update available",
-                                    message: "Is ok to update :) Click yes to proceed",
-                                    type: "question",
-                                    buttons: ["Yes, update at the next start!", "No, update can break everything!"]
-                                })
-                                switch (output) {
-                                    case 0:
-                                        autoUpdater.checkForUpdatesAndNotify().then(r => console.log("Update check: ", r));
-                                        break;
-                                    default:
-                                }
-                            }
-
-                        });
+                        setTimeout(() => {
+                            throw new Error("SOME ERROR HERE")
+                        }, 3000)
                         break;
                     case "PORT":
                         if (result.data) {
@@ -173,7 +189,7 @@ const createWindow = () => {
                             }
                             return (mainWindow = null)
                         });
-                        autoUpdater.channel = "latest"
+                        autoUpdater.channel = package.version.includes("beta") ? "beta" : "latest";
                         autoUpdater.checkForUpdates().then((r) => {
                             if (r) {
                                 let output = Dialog.showMessageBoxSync({
@@ -204,7 +220,6 @@ const createWindow = () => {
             }
         });
     }
-    autoUpdater.channel = package.version.includes("beta") ? "beta" : "latest";
 }
 
 app.on("ready", createWindow)

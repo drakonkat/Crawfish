@@ -7,22 +7,6 @@ import {observer} from "mobx-react";
 function SpeedMeter(props) {
     let {store} = props;
     let {conf} = store;
-    // const refreshStatus = async () => {
-    // try {
-    //     let {client} = props
-    //     client.getConfWs();
-    // } catch (e) {
-    //     console.error(e)
-    // }
-    // }
-    // useEffect(() => {
-    // refreshStatus()
-    // setInterval(() => {
-    //     refreshStatus()
-    // }, 1000)
-    // return clearInterval
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [])
 
     let {
         actualDownload,

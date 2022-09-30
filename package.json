@@ -1,6 +1,6 @@
 {
   "name": "crawfish",
-  "version": "1.7.11-beta",
+  "version": "1.7.12-beta",
   "private": false,
   "author": "drakonkat",
   "description": "Innovative torrent client",
@@ -16,11 +16,11 @@
     "start-electron": "electron .",
     "swagger-autogen": "node swagger.js",
     "prod": "node ./bin/www-prod",
-    "bundle": "npm run build --prefix website/crawfish-official && electron-builder",
+    "bundle": "electron-builder",
     "bundle-linux": "npm run build --prefix website/crawfish-official && electron-builder -l -p always",
     "bundle-win": "npm run build --prefix website/crawfish-official && electron-builder -w -p always",
     "bundle-mac": "npm run build --prefix website/crawfish-official && electron-builder -m -p always",
-    "bundleg": "npm run build --prefix website/crawfish-official && electron-builder -p always"
+    "bundleg": "npm run build --prefix website/crawfish-official && electron-builder"
   },
   "build": {
     "generateUpdatesFilesForAllChannels": true,
@@ -59,6 +59,8 @@
     "debug": "~2.6.9",
     "downloads-folder": "^3.0.3",
     "electron-is-dev": "^2.0.0",
+    "electron-log": "^4.4.8",
+    "electron-unhandled": "^4.0.1",
     "electron-updater": "^5.2.1",
     "express": "~4.18.1",
     "fast-xml-parser": "^4.0.10",
@@ -68,6 +70,7 @@
     "moment": "^2.29.4",
     "morgan": "~1.10.0",
     "node-schedule": "^2.1.0",
+    "octokit": "^2.0.7",
     "open": "^8.4.0",
     "pouchdb": "^7.3.0",
     "pug": "^3.0.2",
