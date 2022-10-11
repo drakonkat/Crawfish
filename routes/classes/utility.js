@@ -3,6 +3,21 @@ const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
 const mime = require('mime-types')
 
 const mapTorrent = (x) => {
+    let progress;
+    let lengthFile = x.files.reduce((total, file) => {
+        return total + file.length;
+    }, 0);
+    if (x.files && x.files.length > 0) {
+        progress = x.files.reduce((total, file) => {
+            if (file.paused) {
+                return total + file.length;
+            } else {
+                return total + (file.progress * file.length);
+            }
+        }, 0) / lengthFile
+    } else {
+        progress = x.progress
+    }
     return {
         size: x.files && x.files.reduce((total, file) => {
             return total + file.length;
@@ -14,16 +29,11 @@ const mapTorrent = (x) => {
         uploaded: x.uploaded,
         downloadSpeed: x.downloadSpeed,
         uploadSpeed: x.uploadSpeed,
-        progress: x.files && (x.files.reduce((total, file) => {
-            if (file.paused) {
-                return total + 1;
-            } else {
-                return total + file.progress;
-            }
-        }, 0)/x.files.length),
+        progress: progress,
         ratio: x.ratio,
         path: x.path,
         done: x.done,
+        length: x.length,
         paused: x.paused,
         timeRemaining: x.timeRemaining,
         received: x.received,
@@ -188,7 +198,6 @@ async function deselectFileFromTorrent(temp, db, fileName = "") {
 }
 
 
-
 async function selectFileFromTorrent(temp, db, fileName = "") {
     let t = mapTorrent(temp);
     let foundedTorrent;
@@ -204,7 +213,7 @@ async function selectFileFromTorrent(temp, db, fileName = "") {
                 if (foundedTorrent.files.find(x => f.name === x.name).paused) {
                     f.paused = true;
                 }
-                if(f.name === fileName) {
+                if (f.name === fileName) {
                     f.paused = false;
                 }
                 return f
