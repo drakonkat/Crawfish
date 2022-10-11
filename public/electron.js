@@ -16,7 +16,7 @@ const log = require('electron-log');
 const package = require("./../package.json")
 const unhandled = require('electron-unhandled');
 const {Octokit} = require("octokit");
-
+autoUpdater.autoDownload = false;
 const octokit = new Octokit({
     auth: process.env.GH_TOKEN
 })
