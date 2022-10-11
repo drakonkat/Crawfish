@@ -89,7 +89,7 @@ export const createAppStore = () => {
             {
                 get: [],
                 set(data) {
-                    if (data !== this.get) {
+                    if (JSON.stringify(data) !== JSON.stringify(this.get)) {
                         this.get = data;
                     }
                 },

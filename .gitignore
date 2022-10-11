@@ -34,3 +34,11 @@ benchmarks/graphs
 config.json
 /Build
 /dist
+/public/crawfish-official/asset-manifest.json
+/public/crawfish-official/favicon.ico
+/public/crawfish-official/index.html
+/public/crawfish-official/logo192.png
+/public/crawfish-official/logo512.png
+/public/crawfish-official/manifest.json
+/public/crawfish-official/robots.txt
+/public/crawfish-official/static/

@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const {mapTorrent, simpleHash, TORRENTS_KEY} = require("./classes/utility")
+const {mapTorrent, simpleHash, TORRENTS_KEY, deselectFileFromTorrent, selectFileFromTorrent} = require("./classes/utility")
 const axios = require("axios");
 
 const router = express.Router();
@@ -83,7 +83,8 @@ router.post('/pause', async (req, res, next) => {
             }
             if (foundedTorrent) {
                 foundedTorrent = {
-                    ...t, _rev: foundedTorrent._rev,
+                    ...t,
+                    _rev: foundedTorrent._rev,
                     _id: TORRENTS_KEY + t.infoHash
                 };
                 foundedTorrent.paused = true;
@@ -237,7 +238,6 @@ router.post('/destroy', async (req, res, next) => {
             }]
         }
     */
-    console.debug('Body:', req.body);
     let {db} = req.app.locals.storage.liveData
     let torrent = req.app.locals.storage.liveData.client.get(req.body.magnet);
     if (torrent) {
@@ -301,6 +301,70 @@ router.post('/remove', async (req, res, next) => {
         }
     }
     res.status(200).json(req.body);
+});
+
+
+router.post('/deselect', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Downloads']
+        #swagger.summary = "Pause a file in a torrent in the list"
+        #swagger.parameters['torrent'] = {
+            in: 'body',
+            description: 'Pause a file',
+            schema: {
+                $magnet: 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintelbuild&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
+                $fileName: 'AAAA'
+            }
+         }
+         #swagger.responses[200] = {
+        description: "A single torrent information",
+        schema: [{
+                $magnet: 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
+            }]
+        }
+    */
+    try {
+        let {fileName, magnet} = req.body;
+        let {db} = req.app.locals.storage.liveData
+        let temp = req.app.locals.storage.liveData.client.get(magnet);
+        if (temp) {
+            await deselectFileFromTorrent(temp, db, fileName);
+        }
+        res.status(200).json(req.body);
+    } catch (e) {
+        console.error(e)
+    }
+});
+router.post('/select', async (req, res, next) => {
+    /*
+        #swagger.tags = ['Downloads']
+        #swagger.summary = "Resume a file from a torrent in the list"
+        #swagger.parameters['torrent'] = {
+            in: 'body',
+            description: 'Resume a file',
+            schema: {
+                $magnet: 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintelbuild&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
+                $fileName: 'AAAA'
+            }
+         }
+         #swagger.responses[200] = {
+        description: "A single torrent information",
+        schema: [{
+                $magnet: 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
+            }]
+        }
+    */
+    try {
+        let {fileName, magnet} = req.body;
+        let {db} = req.app.locals.storage.liveData
+        let temp = req.app.locals.storage.liveData.client.get(magnet);
+        if (temp) {
+            await selectFileFromTorrent(temp, db, fileName);
+        }
+        res.status(200).json(req.body);
+    } catch (e) {
+        console.error(e)
+    }
 });
 
 module.exports = router;

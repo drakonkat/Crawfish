@@ -4,14 +4,23 @@ const mime = require('mime-types')
 
 const mapTorrent = (x) => {
     return {
+        size: x.files && x.files.reduce((total, file) => {
+            return total + file.length;
+        }, 0),
         name: x.name,
         infoHash: x.infoHash,
-        magnet: x.magnetURI,
+        magnet: x.magnetURI || x.magnet,
         downloaded: x.downloaded,
         uploaded: x.uploaded,
         downloadSpeed: x.downloadSpeed,
         uploadSpeed: x.uploadSpeed,
-        progress: x.progress,
+        progress: x.files && (x.files.reduce((total, file) => {
+            if (file.paused) {
+                return total + 1;
+            } else {
+                return total + file.progress;
+            }
+        }, 0)/x.files.length),
         ratio: x.ratio,
         path: x.path,
         done: x.done,
@@ -23,6 +32,7 @@ const mapTorrent = (x) => {
                 name: y.name,
                 length: y.length,
                 path: y.path,
+                paused: y.paused || false,
                 progress: y.progress,
                 streamable: supportedFormats.includes(getExtension(y.name)),
                 done: y.progress >= 1,
@@ -131,6 +141,103 @@ const stringToDate = (string) => {
     }
 }
 
+async function deselectFileFromTorrent(temp, db, fileName = "") {
+    let t = mapTorrent(temp);
+    let foundedTorrent;
+    try {
+        foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+    } catch (e) {
+        console.warn("TORRENT NOT EXISTING BEFORE")
+    }
+    if (foundedTorrent) {
+        foundedTorrent = {
+            ...t,
+            files: t.files.map(f => {
+                if (f.name === fileName || foundedTorrent.files.find(x => f.name === x.name).paused) {
+                    f.paused = true;
+                }
+                return f
+            }),
+            _rev: foundedTorrent._rev,
+            _id: TORRENTS_KEY + t.infoHash
+        };
+        db.put(foundedTorrent)
+    } else {
+        await db.put({
+            ...t,
+            files: t.files.map(f => {
+                if (f.name === fileName) {
+                    f.paused = true;
+                }
+                return f
+            }),
+            _id: TORRENTS_KEY + t.infoHash
+        })
+    }
+
+    temp.deselect(0, temp.pieces.length - 1, false)
+    for (let i = 0; i < temp.files.length; i++) {
+        let f = temp.files[i]
+        let fStored = foundedTorrent.files[i]
+        if (!fStored.paused) {
+            f.select()
+        } else {
+            f.deselect()
+        }
+    }
+}
+
+
+
+async function selectFileFromTorrent(temp, db, fileName = "") {
+    let t = mapTorrent(temp);
+    let foundedTorrent;
+    try {
+        foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
+    } catch (e) {
+        console.warn("TORRENT NOT EXISTING BEFORE")
+    }
+    if (foundedTorrent) {
+        foundedTorrent = {
+            ...t,
+            files: t.files.map(f => {
+                if (foundedTorrent.files.find(x => f.name === x.name).paused) {
+                    f.paused = true;
+                }
+                if(f.name === fileName) {
+                    f.paused = false;
+                }
+                return f
+            }),
+            _rev: foundedTorrent._rev,
+            _id: TORRENTS_KEY + t.infoHash
+        };
+        db.put(foundedTorrent)
+    } else {
+        await db.put({
+            ...t,
+            files: t.files.map(f => {
+                if (f.name === fileName) {
+                    f.paused = false;
+                }
+                return f
+            }),
+            _id: TORRENTS_KEY + t.infoHash
+        })
+    }
+
+    temp.deselect(0, temp.pieces.length - 1, false)
+    for (let i = 0; i < temp.files.length; i++) {
+        let f = temp.files[i]
+        let fStored = foundedTorrent.files[i]
+        if (!fStored.paused) {
+            f.select()
+        } else {
+            f.deselect()
+        }
+    }
+}
+
 module.exports = {
     mapTorrent,
     TORRENTS_KEY,
@@ -139,5 +246,7 @@ module.exports = {
     simpleHash,
     writeFileSyncRecursive,
     parseTorznabResult,
-    stringToDate
+    stringToDate,
+    deselectFileFromTorrent,
+    selectFileFromTorrent
 }

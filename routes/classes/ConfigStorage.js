@@ -1,6 +1,6 @@
 const fs = require('fs');
 const WebTorrent = require('webtorrent-hybrid');
-const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY, simpleHash} = require("./utility");
+const {mapTorrent, writeFileSyncRecursive, TORRENTS_KEY, simpleHash, deselectFileFromTorrent} = require("./utility");
 const downloadsFolder = require('downloads-folder');
 const os = require('os')
 const path = require("path");
@@ -145,7 +145,10 @@ class ConfigStorage {
                 let torrents = await this.getAllTorrent();
                 torrents.forEach((x, index) => {
                     if (!x.paused) {
-                        this.liveData.client.add(x.magnet, {path: x.path || this.getDownload(), skipVerify: x.progress >= 1});
+                        this.liveData.client.add(x.magnet, {
+                            path: x.path || this.getDownload(),
+                            skipVerify: x.progress >= 1
+                        });
                     }
                 });
 
@@ -161,30 +164,9 @@ class ConfigStorage {
                 //Handling torrent fetched part
                 this.liveData.client.on('torrent', async (torrent) => {
                     console.log("Getting torrent: ", torrent.infoHash)
-                    let t = mapTorrent(torrent);
-                    let foundedTorrent;
-                    try {
-                        foundedTorrent = await db.get(TORRENTS_KEY + t.infoHash);
-                    } catch (e) {
-                        console.warn("TORRENT NOT EXISTING BEFORE")
-                    }
-                    if (foundedTorrent) {
-                        foundedTorrent = {
-                            ...t, _rev: foundedTorrent._rev,
-                            _id: TORRENTS_KEY + t.infoHash
-                        };
-                        foundedTorrent.paused = false;
-                        foundedTorrent.downloadSpeed = 0;
-                        foundedTorrent.uploadSpeed = 0;
-                        db.put(foundedTorrent)
-                    } else {
-                        await db.put({
-                            ...t,
-                            _id: TORRENTS_KEY + t.infoHash
-                        })
-                    }
+                    await deselectFileFromTorrent(torrent, db)
                     if (!this.configuration.torrentPath) {
-                        this.setVariable("torrentPath", "./torrent")
+                        await this.setVariable("torrentPath", "./torrent")
                     }
                     if (!fs.existsSync(this.configuration.torrentPath)) {
                         fs.mkdirSync(this.configuration.torrentPath, {recursive: true});
@@ -192,6 +174,7 @@ class ConfigStorage {
                     let path = this.configuration.torrentPath + "/" + torrent.name + ".torrent";
                     let file = fs.createWriteStream(path);
                     file.write(torrent.torrentFile);
+
                 })
                 console.log("Service started")
                 if (process.send) {
@@ -365,12 +348,16 @@ class ConfigStorage {
                         torrents.push(...oldTorrent.filter(x => !torrents.map(y => y.infoHash).includes(x.infoHash)))
                         torrents.forEach((t) => {
                             if (t && t.files) {
+                                let ot = oldTorrent.find(ot => ot.infoHash == t.infoHash)
                                 t.files.forEach((f) => {
                                     f.id = simpleHash(t.infoHash, f.name);
+                                    if (ot.files.find(x => f.name === x.name).paused) {
+                                        f.paused = true;
+                                    }
                                 })
                             }
                         })
-                        ws.send(JSON.stringify({key: data, value: torrents}));
+                        ws.send(JSON.stringify({key: data, value: torrents.map(mapTorrent)}));
                         break;
                     default:
                         if (this.liveData.client) {

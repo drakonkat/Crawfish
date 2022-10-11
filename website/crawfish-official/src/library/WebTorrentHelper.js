@@ -78,6 +78,26 @@ export class WebTorrentHelper {
             data: data
         });
     }
+    deselectTorrent = (data) => {
+        return this.axios({
+            method: "post",
+            url: "/torrent/deselect",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        });
+    }
+    selectTorrent = (data) => {
+        return this.axios({
+            method: "post",
+            url: "/torrent/select",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        });
+    }
     removeTorrent = (data) => {
         return this.axios({
             method: "post",

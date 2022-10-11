@@ -28,8 +28,9 @@ class WebTorrentGuiV2 extends Component {
         severity: "success",
         snackbar: false,
         snackbarMessage: "Copied to clipboard",
-        defaultMenu: []
-
+        defaultMenu: [],
+        order:'asc',
+        orderBy:'name'
     }
 
     componentDidMount() {
@@ -122,12 +123,35 @@ class WebTorrentGuiV2 extends Component {
         }
     }
 
+    descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    getComparator(order, orderBy) {
+        return order === 'desc'
+            ? (a, b) => this.descendingComparator(a, b, orderBy)
+            : (a, b) => -this.descendingComparator(a, b, orderBy);
+    }
+
     openSnackbar = () => {
         this.setState({snackbar: true})
     }
-
+    handleRequestSort = (event, property) => {
+        let {order, orderBy} = this.state;
+        const isAsc = orderBy === property && order === 'asc';
+        this.setState({
+            order:isAsc ? 'desc' : 'asc',
+            orderBy:property
+        })
+    };
     renderBody = () => {
-        let {enabledView, enabledCategory, filterTorrent, client, search, selectedTorrent} = this.state;
+        let {enabledView, enabledCategory, filterTorrent, client, search, selectedTorrent, order, orderBy} = this.state;
         let {remote, store} = this.props;
         let {status} = store;
         let torrents = status.get.filter(filterTorrent);
@@ -152,7 +176,10 @@ class WebTorrentGuiV2 extends Component {
                             this.setState({selectedTorrent: []})
                         }
                     }}
-                    torrents={torrents}
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={this.handleRequestSort}
+                    torrents={torrents.sort(this.getComparator(order, orderBy))}
                     predicate={x => selectedTorrent.includes(x.infoHash)}
                     callbackfn={(torrent, index) => {
                         return <TorrentTableRow isRowSelected={this.isRowSelected(torrent.infoHash)}

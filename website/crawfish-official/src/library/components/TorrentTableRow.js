@@ -55,13 +55,6 @@ function TorrentTableRow(props) {
     } else {
         state = "--:--"
     }
-    let size = 0;
-    torrent.files.forEach(file => {
-        size = size + file.length
-    })
-    // let output = [];
-    // output.push()
-    // output.push()
     return (<>
         <TableRow key={torrent.infoHash || ("VALUE-" + index)} sx={{borderBottom: 'unset'}}>
             <TableCell key={"checkbox-child"} padding={"checkbox"} component="th" scope="row">
@@ -85,7 +78,7 @@ function TorrentTableRow(props) {
             </TableCell>
             <TableCell key={"size-child"} align="left">
                 <Typography variant={"body2"}>
-                    {humanFileSize(size)}
+                    {humanFileSize(torrent.size)}
                 </Typography>
             </TableCell>
             <TableCell key={"files-child"} align="right">
@@ -213,7 +206,11 @@ function TorrentTableRow(props) {
                     {torrent.files.map(f => {
                         return <FileElement key={"file-" + f.id}
                                             torrentMagnet={torrent.magnet}
-                                            remote={remote} file={f} client={client}/>
+                                            remote={remote}
+                                            file={f}
+                                            client={client}
+                                            torrent={torrent}
+                        />
                     })}
                 </Collapse>
             </TableCell>
