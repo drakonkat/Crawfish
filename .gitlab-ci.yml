@@ -1,5 +1,5 @@
 variables:
-  IMAGE_VERSION: "1.7.9-beta"
+  IMAGE_VERSION: "1.7.18"
   GIT_DEPTH: '3'
   SIMPLECOV: 'true'
   RUST_BACKTRACE: '1'
@@ -35,7 +35,6 @@ express:
     - docker:dind
   script:
     - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
-    - docker pull mauromazzocchetti/crawfish:latest
     - docker build --progress=plain --tag="mauromazzocchetti/crawfish:$IMAGE_VERSION" --tag="mauromazzocchetti/crawfish:latest" ./
     - docker push mauromazzocchetti/crawfish:$IMAGE_VERSION
     - docker push mauromazzocchetti/crawfish:latest
