@@ -119,35 +119,35 @@ const crawlFitGirl = async (q) => {
 
 const crawlMovies1337x = async (q) => {
     let cat = categories._1337x.movies
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=movie&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    let result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=movie&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
 
 
 const crawlTvShow1337x = async (q) => {
     let cat = categories._1337x.tvShow
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    let result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
 
 const crawlGames1337x = async (q) => {
     let cat = categories._1337x.games
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    let result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
 
 const crawlMusic1337x = async (q) => {
     let cat = categories._1337x.music
-    let result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+    let result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/1337x/results/torznab/?apikey=" + API_KEY + "&t=tvsearch&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     return parseTorznabResult(result.data);
 }
 
 const jackettCrawl = async (name, cat, q) => {
     let result
     if (cat) {
-        result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
+        result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers&cat=" + cat)
     } else {
-        result = await axios.get("https://jackett.crawfish.cf/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers");
+        result = await axios.get("https://jackett-racknerd.tnl.one/api/v2.0/indexers/" + name + "/results/torznab/?apikey=" + API_KEY + "&q=" + q + "&attrs=poster,magneturl,language,infohash,leechers");
     }
     return parseTorznabResult(result.data);
 }
